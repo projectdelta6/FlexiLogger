@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'maven'
+
+group = 'com.github.projectdelta6'
 
 android {
     compileSdkVersion 28
