@@ -37,11 +37,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun i(caller: Any, msg: String, tr: Throwable? = null) {
+    fun i(caller: Any, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            i(getClassName(caller), msg)
+            i(getClassName(caller), message)
         } else {
-            i(getClassName(caller), msg, tr)
+            i(getClassName(caller), message, tr)
         }
     }
 
@@ -53,26 +54,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun i(caller: Class<*>, msg: String, tr: Throwable? = null) {
+    fun i(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            i(getClassName(caller), msg)
+            i(getClassName(caller), message)
         } else {
-            i(getClassName(caller), msg, tr)
-        }
-    }
-
-    /**
-     * Implement the actual Logging.
-     *
-     * @param tag [Class] The Log tag
-     * @param msg [String] The Log message.
-     */
-    fun i(tag: String, msg: String) {
-        if (canLogToConsole(i)) {
-            logToConsole(i, tag, msg)
-        }
-        if (mustReport(i)) {
-            report(i, tag, msg)
+            i(getClassName(caller), message, tr)
         }
     }
 
@@ -83,12 +70,14 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    fun i(tag: String, msg: String, tr: Throwable) {
+    @JvmOverloads
+    fun i(tag: String, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (canLogToConsole(i)) {
-            logToConsole(i, tag, msg, tr)
+            logToConsole(i, tag, message, tr)
         }
         if (mustReport(i)) {
-            report(i, tag, msg, tr)
+            reportInternal(i, tag, message, tr)
         }
     }
 
@@ -100,11 +89,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun d(caller: Any, msg: String, tr: Throwable? = null) {
+    fun d(caller: Any, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            d(getClassName(caller), msg)
+            d(getClassName(caller), message)
         } else {
-            d(getClassName(caller), msg, tr)
+            d(getClassName(caller), message, tr)
         }
     }
 
@@ -116,26 +106,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun d(caller: Class<*>, msg: String, tr: Throwable? = null) {
+    fun d(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            d(getClassName(caller), msg)
+            d(getClassName(caller), message)
         } else {
-            d(getClassName(caller), msg, tr)
-        }
-    }
-
-    /**
-     * Implement the actual Logging.
-     *
-     * @param tag [Class] The Log tag
-     * @param msg [String] The Log message.
-     */
-    fun d(tag: String, msg: String) {
-        if (canLogToConsole(d)) {
-            logToConsole(d, tag, msg)
-        }
-        if (mustReport(d)) {
-            report(d, tag, msg)
+            d(getClassName(caller), message, tr)
         }
     }
 
@@ -146,12 +122,14 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    fun d(tag: String, msg: String, tr: Throwable) {
+    @JvmOverloads
+    fun d(tag: String, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (canLogToConsole(d)) {
-            logToConsole(d, tag, msg, tr)
+            logToConsole(d, tag, message, tr)
         }
         if (mustReport(d)) {
-            report(d, tag, msg, tr)
+            reportInternal(d, tag, message, tr)
         }
     }
 
@@ -163,11 +141,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun v(caller: Any, msg: String, tr: Throwable? = null) {
+    fun v(caller: Any, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            v(getClassName(caller), msg)
+            v(getClassName(caller), message)
         } else {
-            v(getClassName(caller), msg, tr)
+            v(getClassName(caller), message, tr)
         }
     }
 
@@ -179,26 +158,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun v(caller: Class<*>, msg: String, tr: Throwable? = null) {
+    fun v(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            v(getClassName(caller), msg)
+            v(getClassName(caller), message)
         } else {
-            v(getClassName(caller), msg, tr)
-        }
-    }
-
-    /**
-     * Implement the actual Logging.
-     *
-     * @param tag [Class] The Log tag
-     * @param msg [String] The Log message.
-     */
-    fun v(tag: String, msg: String) {
-        if (canLogToConsole(v)) {
-            logToConsole(v, tag, msg)
-        }
-        if (mustReport(v)) {
-            report(v, tag, msg)
+            v(getClassName(caller), message, tr)
         }
     }
 
@@ -209,12 +174,14 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    fun v(tag: String, msg: String, tr: Throwable) {
+    @JvmOverloads
+    fun v(tag: String, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (canLogToConsole(v)) {
-            logToConsole(v, tag, msg, tr)
+            logToConsole(v, tag, message, tr)
         }
         if (mustReport(v)) {
-            report(v, tag, msg, tr)
+            reportInternal(v, tag, message, tr)
         }
     }
 
@@ -226,11 +193,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun e(caller: Any, msg: String, tr: Throwable? = null) {
+    fun e(caller: Any, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            e(getClassName(caller), msg)
+            e(getClassName(caller), message)
         } else {
-            e(getClassName(caller), msg, tr)
+            e(getClassName(caller), message, tr)
         }
     }
 
@@ -242,26 +210,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun e(caller: Class<*>, msg: String, tr: Throwable? = null) {
+    fun e(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (tr == null) {
-            e(getClassName(caller), msg)
+            e(getClassName(caller), message)
         } else {
-            e(getClassName(caller), msg, tr)
-        }
-    }
-
-    /**
-     * Implement the actual Logging.
-     *
-     * @param tag [Class] The Log tag
-     * @param msg [String] The Log message.
-     */
-    fun e(tag: String, msg: String) {
-        if (canLogToConsole(e)) {
-            logToConsole(e, tag, msg)
-        }
-        if (mustReport(e)) {
-            report(e, tag, msg)
+            e(getClassName(caller), message, tr)
         }
     }
 
@@ -272,36 +226,14 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    fun e(tag: String, msg: String, tr: Throwable) {
+    @JvmOverloads
+    fun e(tag: String, msg: String? = null, tr: Throwable? = null) {
+        val message: String = msg ?: ""
         if (canLogToConsole(e)) {
-            logToConsole(e, tag, msg, tr)
+            logToConsole(e, tag, message, tr)
         }
         if (mustReport(e)) {
-            report(e, tag, msg, tr)
-        }
-    }
-
-    /**
-     * The actual Logging out to the console.
-     *
-     * @param type [Int] @[LogType], the type of log this came from.
-     * @param tag [Class] The Log tag
-     * @param msg [String] The Log message..
-     */
-    private fun logToConsole(@LogType type: Int, tag: String, msg: String) {
-        when (type) {
-            i -> {
-                android.util.Log.i(tag, msg)
-            }
-            d -> {
-                android.util.Log.d(tag, msg)
-            }
-            v -> {
-                android.util.Log.v(tag, msg)
-            }
-            e -> {
-                android.util.Log.e(tag, msg)
-            }
+            reportInternal(e, tag, message, tr)
         }
     }
 
@@ -313,20 +245,46 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    private fun logToConsole(@LogType type: Int, tag: String, msg: String, tr: Throwable) {
-        when (type) {
-            i -> {
-                android.util.Log.i(tag, msg, tr)
+    @JvmOverloads
+    private fun logToConsole(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null) {
+        if (tr != null) {
+            when (type) {
+                i -> {
+                    android.util.Log.i(tag, msg, tr)
+                }
+                d -> {
+                    android.util.Log.d(tag, msg, tr)
+                }
+                v -> {
+                    android.util.Log.v(tag, msg, tr)
+                }
+                e -> {
+                    android.util.Log.e(tag, msg, tr)
+                }
             }
-            d -> {
-                android.util.Log.d(tag, msg, tr)
+        } else {
+            when (type) {
+                i -> {
+                    android.util.Log.i(tag, msg)
+                }
+                d -> {
+                    android.util.Log.d(tag, msg)
+                }
+                v -> {
+                    android.util.Log.v(tag, msg)
+                }
+                e -> {
+                    android.util.Log.e(tag, msg)
+                }
             }
-            v -> {
-                android.util.Log.v(tag, msg, tr)
-            }
-            e -> {
-                android.util.Log.e(tag, msg, tr)
-            }
+        }
+    }
+
+    private fun reportInternal(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null) {
+        if (tr == null) {
+            report(type, tag, msg)
+        } else {
+            report(type, tag, msg, tr)
         }
     }
 
