@@ -10,9 +10,9 @@ import androidx.annotation.IntDef
 abstract class FlexiLog {
 
     /**
-     * Gets the class name string for the given [Object].
+     * Gets the class name string for the given [Any].
      *
-     * @param o [Object] To get the String name of.
+     * @param o [Any] To get the String name of.
      * @return [String] The simple Name of the Object's Class.
      */
     private fun getClassName(o: Any): String {
@@ -245,7 +245,6 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    @JvmOverloads
     private fun logToConsole(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null) {
         if (tr != null) {
             when (type) {
