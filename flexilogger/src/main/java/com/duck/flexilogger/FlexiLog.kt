@@ -193,12 +193,12 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun e(caller: Any, msg: String? = null, tr: Throwable? = null) {
+    fun e(caller: Any, msg: String? = null, tr: Throwable? = null, forceReport: Boolean = false) {
         val message: String = msg ?: ""
         if (tr == null) {
-            e(getClassName(caller), message)
+            e(getClassName(caller), message, forceReport = forceReport)
         } else {
-            e(getClassName(caller), message, tr)
+            e(getClassName(caller), message, tr, forceReport)
         }
     }
 
@@ -210,12 +210,17 @@ abstract class FlexiLog {
      * @param tr     [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun e(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
+    fun e(
+        caller: Class<*>,
+        msg: String? = null,
+        tr: Throwable? = null,
+        forceReport: Boolean = false
+    ) {
         val message: String = msg ?: ""
         if (tr == null) {
-            e(getClassName(caller), message)
+            e(getClassName(caller), message, forceReport = forceReport)
         } else {
-            e(getClassName(caller), message, tr)
+            e(getClassName(caller), message, tr, forceReport)
         }
     }
 
