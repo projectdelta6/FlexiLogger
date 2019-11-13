@@ -227,12 +227,12 @@ abstract class FlexiLog {
      * @param tr  [Throwable] to be attached to the Log.
      */
     @JvmOverloads
-    fun e(tag: String, msg: String? = null, tr: Throwable? = null) {
+    fun e(tag: String, msg: String? = null, tr: Throwable? = null, forceReport: Boolean = false) {
         val message: String = msg ?: ""
         if (canLogToConsole(e)) {
             logToConsole(e, tag, message, tr)
         }
-        if (mustReport(e)) {
+        if (forceReport || mustReport(e)) {
             reportInternal(e, tag, message, tr)
         }
     }
