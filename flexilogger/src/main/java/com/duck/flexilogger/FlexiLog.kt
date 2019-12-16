@@ -73,12 +73,9 @@ abstract class FlexiLog {
     @JvmOverloads
     fun i(tag: String, msg: String? = null, tr: Throwable? = null) {
         val message: String = msg ?: ""
-        if (canLogToConsole(i)) {
-            logToConsole(i, tag, message, tr)
-        }
-        if (mustReport(i)) {
-            reportInternal(i, tag, message, tr)
-        }
+        logToConsole(i, tag, message, tr)
+        reportInternal(i, tag, message, tr)
+        writeToFileInternal(i, tag, message, tr)
     }
 
     /**
@@ -125,12 +122,9 @@ abstract class FlexiLog {
     @JvmOverloads
     fun d(tag: String, msg: String? = null, tr: Throwable? = null) {
         val message: String = msg ?: ""
-        if (canLogToConsole(d)) {
-            logToConsole(d, tag, message, tr)
-        }
-        if (mustReport(d)) {
-            reportInternal(d, tag, message, tr)
-        }
+        logToConsole(d, tag, message, tr)
+        reportInternal(d, tag, message, tr)
+        writeToFileInternal(d, tag, message, tr)
     }
 
     /**
@@ -177,12 +171,9 @@ abstract class FlexiLog {
     @JvmOverloads
     fun v(tag: String, msg: String? = null, tr: Throwable? = null) {
         val message: String = msg ?: ""
-        if (canLogToConsole(v)) {
-            logToConsole(v, tag, message, tr)
-        }
-        if (mustReport(v)) {
-            reportInternal(v, tag, message, tr)
-        }
+        logToConsole(v, tag, message, tr)
+        reportInternal(v, tag, message, tr)
+        writeToFileInternal(v, tag, message, tr)
     }
 
     /**
@@ -234,12 +225,9 @@ abstract class FlexiLog {
     @JvmOverloads
     fun e(tag: String, msg: String? = null, tr: Throwable? = null, forceReport: Boolean = false) {
         val message: String = msg ?: ""
-        if (canLogToConsole(e)) {
-            logToConsole(e, tag, message, tr)
-        }
-        if (forceReport || mustReport(e)) {
-            reportInternal(e, tag, message, tr)
-        }
+        logToConsole(e, tag, message, tr)
+        reportInternal(e, tag, message, tr)
+        writeToFileInternal(e, tag, message, tr)
     }
 
     /**
@@ -251,44 +239,54 @@ abstract class FlexiLog {
      * @param tr  [Throwable] to be attached to the Log.
      */
     private fun logToConsole(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null) {
-        if (tr != null) {
-            when (type) {
-                i -> {
-                    android.util.Log.i(tag, msg, tr)
+        if (canLogToConsole(d)) {
+            if (tr != null) {
+                when (type) {
+                    i -> {
+                        android.util.Log.i(tag, msg, tr)
+                    }
+                    d -> {
+                        android.util.Log.d(tag, msg, tr)
+                    }
+                    v -> {
+                        android.util.Log.v(tag, msg, tr)
+                    }
+                    e -> {
+                        android.util.Log.e(tag, msg, tr)
+                    }
                 }
-                d -> {
-                    android.util.Log.d(tag, msg, tr)
-                }
-                v -> {
-                    android.util.Log.v(tag, msg, tr)
-                }
-                e -> {
-                    android.util.Log.e(tag, msg, tr)
-                }
-            }
-        } else {
-            when (type) {
-                i -> {
-                    android.util.Log.i(tag, msg)
-                }
-                d -> {
-                    android.util.Log.d(tag, msg)
-                }
-                v -> {
-                    android.util.Log.v(tag, msg)
-                }
-                e -> {
-                    android.util.Log.e(tag, msg)
+            } else {
+                when (type) {
+                    i -> {
+                        android.util.Log.i(tag, msg)
+                    }
+                    d -> {
+                        android.util.Log.d(tag, msg)
+                    }
+                    v -> {
+                        android.util.Log.v(tag, msg)
+                    }
+                    e -> {
+                        android.util.Log.e(tag, msg)
+                    }
                 }
             }
         }
     }
 
-    private fun reportInternal(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null) {
-        if (tr == null) {
-            report(type, tag, msg)
-        } else {
-            report(type, tag, msg, tr)
+    private fun reportInternal(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+        if (forceReport || mustReport(e)) {
+            if (tr == null) {
+                report(type, tag, msg)
+            } else {
+                report(type, tag, msg, tr)
+            }
+        }
+    }
+
+    private fun writeToFileInternal(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null) {
+        if(mustLogToFile(type)) {
+            writeLogToFile(type, tag, msg, tr)
         }
     }
 
@@ -327,6 +325,16 @@ abstract class FlexiLog {
      * Used to determine if we should send a report (to Crashlytics or equivalent)
      */
     abstract fun mustReport(@LogType type: Int): Boolean
+
+    /**
+     * Used to determine if we should call [writeLogToFile]
+     */
+    abstract fun mustLogToFile(@LogType type: Int): Boolean
+
+    /**
+     * Implement writing of the Log to your file.
+     */
+    abstract fun writeLogToFile(@LogType type: Int, tag: String, msg: String, tr: Throwable?)
 
     companion object {
         private val CLASS = "class: "
