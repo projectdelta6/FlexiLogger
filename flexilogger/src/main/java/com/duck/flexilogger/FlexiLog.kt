@@ -72,10 +72,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun i(tag: String, msg: String? = null, tr: Throwable? = null) {
-        val message: String = msg ?: ""
-        logToConsole(i, tag, message, tr)
-        reportInternal(i, tag, message, tr)
-        writeToFileInternal(i, tag, message, tr)
+        doTheStuff(i, tag, msg ?: "", tr)
     }
 
     /**
@@ -121,10 +118,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun d(tag: String, msg: String? = null, tr: Throwable? = null) {
-        val message: String = msg ?: ""
-        logToConsole(d, tag, message, tr)
-        reportInternal(d, tag, message, tr)
-        writeToFileInternal(d, tag, message, tr)
+        doTheStuff(d, tag, msg ?: "", tr)
     }
 
     /**
@@ -170,10 +164,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun v(tag: String, msg: String? = null, tr: Throwable? = null) {
-        val message: String = msg ?: ""
-        logToConsole(v, tag, message, tr)
-        reportInternal(v, tag, message, tr)
-        writeToFileInternal(v, tag, message, tr)
+        doTheStuff(v, tag, msg ?: "", tr)
     }
 
     /**
@@ -224,10 +215,13 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun e(tag: String, msg: String? = null, tr: Throwable? = null, forceReport: Boolean = false) {
-        val message: String = msg ?: ""
-        logToConsole(e, tag, message, tr)
-        reportInternal(e, tag, message, tr)
-        writeToFileInternal(e, tag, message, tr)
+        doTheStuff(e, tag, msg ?: "", tr, forceReport)
+    }
+
+    private fun doTheStuff(@LogType type: Int, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+        logToConsole(type, tag, msg, tr)
+        reportInternal(type, tag, msg, tr, forceReport)
+        writeToFileInternal(type, tag, msg, tr)
     }
 
     /**
