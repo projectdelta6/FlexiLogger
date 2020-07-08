@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FlexiLogger.iml" filepath="$PROJECT_DIR$/FlexiLogger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/flexilogger/FlexiLogger-flexilogger.iml" filepath="$PROJECT_DIR$/flexilogger/FlexiLogger-flexilogger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/StudioProjects-FlexiLogger.iml" filepath="$PROJECT_DIR$/StudioProjects-FlexiLogger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/flexilogger/flexilogger.iml" filepath="$PROJECT_DIR$/flexilogger/flexilogger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FlexiLogger.iml" filepath="$PROJECT_DIR$/.idea/FlexiLogger.iml" group="FlexiLogger" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/flexilogger.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/flexilogger.iml" group="FlexiLogger/flexilogger" />
     </modules>
   </component>
 </project>
