@@ -19,6 +19,6 @@ and:
 
 ```gradle
 dependencies {
-    compile 'com.github.projectdelta6:FlexiLogger:{latest version}'
+    compile 'com.github.projectdelta6:FlexiLogger:{desired version}'
 }
 ```
