@@ -342,7 +342,7 @@ abstract class FlexiLog {
     }
 
     private fun reportInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
-        if (forceReport || mustReport(type)) {
+        if (forceReport || shouldReport(type)) {
             if (tr == null) {
                 report(type, tag, msg)
             } else {
@@ -352,7 +352,7 @@ abstract class FlexiLog {
     }
 
     private fun writeToFileInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
-        if(mustLogToFile(type)) {
+        if(shouldLogToFile(type)) {
             writeLogToFile(type, tag, msg, tr)
         }
     }
@@ -384,17 +384,21 @@ abstract class FlexiLog {
     /**
      * Used to determine if we should send a report (to Crashlytics or equivalent)
      */
-    abstract fun mustReport(type: LogType): Boolean
+    abstract fun shouldReport(type: LogType): Boolean
 
     /**
      * Used to determine if we should call [writeLogToFile]
      */
-    abstract fun mustLogToFile(type: LogType): Boolean
+    open fun shouldLogToFile(type: LogType): Boolean {
+        return false
+    }
 
     /**
      * Implement writing of the Log to your file.
      */
-    abstract fun writeLogToFile(type: LogType, tag: String, msg: String, tr: Throwable?)
+    open fun writeLogToFile(type: LogType, tag: String, msg: String, tr: Throwable?) {
+        //does nothing - override to implement writing to file
+    }
 
     companion object {
         private const val CLASS = "class: "
