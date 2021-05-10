@@ -23,7 +23,7 @@ dependencies {
 }
 ```
 
-##Setup
+## Setup
 Create a class that extends FlexiLog.  I have found it is best to create this class as a kotlin object called Log at the root of your project. 
 ```
 package com.example
@@ -44,41 +44,41 @@ object Log: FlexiLog() {
 
 	override fun report(type: LogType, tag: String, msg: String) {
 		//Implement reporting to your reporting system eg Sentry
-        /*
-        Sentry(v4.3.2) reporting example:
-        Sentry.captureEvent(SentryEvent().apply {
-            message = Message().apply { message = msg }
-            level = getLevel(type)
-            logger = tag
-        })
-        */
+		/*
+		 * Sentry(v4.3.2) reporting example:
+		Sentry.captureEvent(SentryEvent().apply {
+		    message = Message().apply { message = msg }
+		    level = getLevel(type)
+		    logger = tag
+		})
+		*/
 	}
 
 	override fun report(type: LogType, tag: String, msg: String, tr: Throwable) {
 		//Implement reporting to your reporting system eg Sentry
-        /*
-        Sentry(v4.3.2) reporting example:
-        Sentry.captureEvent(SentryEvent().apply {
-            message = Message().apply { message = msg }
-            level = getLevel(type)
-            logger = tag
-            throwable = tr
-        })
-        */
+		/*
+		 * Sentry(v4.3.2) reporting example:
+		Sentry.captureEvent(SentryEvent().apply {
+		    message = Message().apply { message = msg }
+		    level = getLevel(type)
+		    logger = tag
+		    throwable = tr
+		})
+		*/
 	}
     
-    /*
-    method for Serntry reporting example:
-    @Contract(pure = true)
-    private fun getLevel(type: LogType): SentryLevel {
-        return when (type) {
-            LogType.E -> SentryLevel.ERROR
-            LogType.D, LogType.V, LogType.WTF -> SentryLevel.DEBUG
-            LogType.I -> SentryLevel.INFO
-            LogType.W -> SentryLevel.WARNING
-        }
-    }
-    */
+    	/*
+    	 * method for Serntry reporting example:
+    	@Contract(pure = true)
+    	private fun getLevel(type: LogType): SentryLevel {
+	    return when (type) {
+	    	LogType.E -> SentryLevel.ERROR
+	    	LogType.D, LogType.V, LogType.WTF -> SentryLevel.DEBUG
+	    	LogType.I -> SentryLevel.INFO
+	    	LogType.W -> SentryLevel.WARNING
+	    }
+    	}
+    	*/
 }
 ```
 
