@@ -82,4 +82,4 @@ object Log: FlexiLog() {
 }
 ```
 
-Then in your code make sure to import your Log file instead of `android.util.Log`
+Then in your code make sure to import your Log file (`com.example.Log` in this example) instead of `android.util.Log`
