@@ -2,16 +2,16 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.4.21'
+        kotlin_version = '1.5.10'
         dokkaVersion = '0.9.17'
     }
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
@@ -23,14 +23,13 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
 
 wrapper {
     gradleVersion = "5.1.1"
