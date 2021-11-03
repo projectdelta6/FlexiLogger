@@ -68,7 +68,7 @@ object Log: FlexiLog() {
 	}
     
     	/*
-    	 * method for Serntry reporting example:
+    	 * method for Sentry reporting example:
     	@Contract(pure = true)
     	private fun getLevel(type: LogType): SentryLevel {
 	    	return when (type) {
@@ -83,3 +83,4 @@ object Log: FlexiLog() {
 ```
 
 Then in your code make sure to import your Log file (`com.example.Log` in this example) instead of `android.util.Log`
+And in Java code you'll need to use it as `Log.INSTANCE.{type i,d,v, etc}(...)`
