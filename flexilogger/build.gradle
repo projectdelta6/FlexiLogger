@@ -2,18 +2,17 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'org.jetbrains.dokka-android'
-    id 'com.github.dcendents.android-maven'
 }
 
 group = 'com.github.projectdelta6'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 14
-        versionName "1.14"
+        versionName "1.15"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
