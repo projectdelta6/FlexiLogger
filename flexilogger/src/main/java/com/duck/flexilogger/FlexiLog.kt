@@ -346,10 +346,19 @@ abstract class FlexiLog {
             if (tr == null) {
                 report(type, tag, msg)
             } else {
-                report(type, tag, msg, tr)
+                if(shouldReportException(tr)) {
+                    report(type, tag, msg, tr)
+                }
             }
         }
     }
+
+    /**
+     * check the [tr] exception to decide if it should be reported.
+     *
+     * This can be used to ignore certain types of exceptions.
+     */
+    abstract fun shouldReportException(tr: Throwable): Boolean
 
     private fun writeToFileInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
         if(shouldLogToFile(type)) {
