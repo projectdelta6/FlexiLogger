@@ -2,8 +2,7 @@
 
 Android Logging helper to provide flexible Log methods.
 
-[![Release](https://jitpack.io/v/projectdelta6/FlexiLogger.svg)]
-(https://jitpack.io/#projectdelta6/FlexiLogger)
+[![Release](https://jitpack.io/v/projectdelta6/FlexiLogger.svg)](https://jitpack.io/#projectdelta6/FlexiLogger)
 
 https://jitpack.io/#projectdelta6/FlexiLogger
 
