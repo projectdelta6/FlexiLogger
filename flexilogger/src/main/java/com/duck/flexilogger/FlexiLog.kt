@@ -13,7 +13,7 @@ abstract class FlexiLog {
      * @param o [Any] To get the String name of.
      * @return [String] The simple Name of the Object's Class.
      */
-    private fun getClassName(o: Any): String {
+    protected fun getClassName(o: Any): String {
         return CLASS + o.javaClass.simpleName
     }
 
@@ -23,7 +23,7 @@ abstract class FlexiLog {
      * @param clazz [Class] To get the String name of.
      * @return [String] The simple Name of the Class.
      */
-    private fun getClassName(clazz: Class<*>): String {
+    protected fun getClassName(clazz: Class<*>): String {
         return CLASS + clazz.simpleName
     }
 
@@ -303,7 +303,7 @@ abstract class FlexiLog {
         actionLog(LogType.WTF, tag, msg ?: "", tr)
     }
 
-    private fun actionLog(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+    protected fun actionLog(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
         logToConsole(type, tag, msg, tr)
         reportInternal(type, tag, msg, tr, forceReport)
         writeToFileInternal(type, tag, msg, tr)
@@ -317,8 +317,8 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    private fun logToConsole(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
-        if (canLogToConsole(LogType.D)) {
+    protected fun logToConsole(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
+        if (canLogToConsole(type)) {
             if (tr != null) {
                 when (type) {
                     LogType.I -> android.util.Log.i(tag, msg, tr)
@@ -341,7 +341,7 @@ abstract class FlexiLog {
         }
     }
 
-    private fun reportInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+    protected fun reportInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
         if (forceReport || shouldReport(type)) {
             if (tr == null) {
                 report(type, tag, msg)
@@ -360,7 +360,7 @@ abstract class FlexiLog {
      */
     protected abstract fun shouldReportException(tr: Throwable): Boolean
 
-    private fun writeToFileInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
+    protected fun writeToFileInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
         if(shouldLogToFile(type)) {
             writeLogToFile(type, tag, msg, tr)
         }
@@ -409,69 +409,7 @@ abstract class FlexiLog {
         //does nothing - override to implement writing to file
     }
 
-    /**
-     * Create a breadcrumb
-     *
-     * @param caller Any object, the Class name will be used as the 'tag' in the breadcrumb message
-     * @param message The message for the breadcrumb
-     */
-    fun breadCrumb(caller: Any, message: String) {
-        breadCrumb(getClassName(caller), message)
-    }
-
-    /**
-     * Create a breadcrumb
-     *
-     * @param caller Class object, the Class name will be used as the 'tag' in the breadcrumb message
-     * @param message The message for the breadcrumb
-     */
-    fun breadCrumb(caller: Class<*>, message: String) {
-        breadCrumb(getClassName(caller), message)
-    }
-
-    /**
-     * Create a breadcrumb
-     *
-     * @param tag String used to construct the breadcrumb message using [formatBreadcrumbMessage]
-     * @param message The message for the breadcrumb
-     */
-    fun breadCrumb(tag: String, message: String) {
-        if(shouldLogBreadcrumbs()) {
-            logBreadcrumb(formatBreadcrumbMessage(tag, message))
-        }
-    }
-
-    /**
-     * Create a breadcrumb
-     *
-     * @param message The message for the breadcrumb
-     */
-    fun breadCrumb(message: String) {
-        if(shouldLogBreadcrumbs()) {
-            logBreadcrumb(message)
-        }
-    }
-
-    /**
-     * Join the [tag] and [message] into a single string.
-     *
-     * The base implementation constructs the string with the format "[tag]::[message]"
-     */
-    open fun formatBreadcrumbMessage(tag: String, message: String): String {
-        return if(tag.isBlank()) message else "$tag::$message"
-    }
-
-    /**
-     * Determine if the breadcrumb should be reported or not.
-     */
-    protected abstract fun shouldLogBreadcrumbs(): Boolean
-
-    /**
-     * Implement Breadcrumb report.
-     */
-    protected abstract fun logBreadcrumb(message: String)
-
     companion object {
-        private const val CLASS = "class: "
+        protected const val CLASS = "class: "
     }
 }
