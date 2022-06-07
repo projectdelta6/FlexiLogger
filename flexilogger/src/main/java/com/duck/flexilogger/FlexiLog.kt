@@ -70,7 +70,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun i(tag: String, msg: String? = null, tr: Throwable? = null) {
-        doTheStuff(LogType.I, tag, msg ?: "", tr)
+        actionLog(LogType.I, tag, msg ?: "", tr)
     }
 
     /**
@@ -116,7 +116,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun d(tag: String, msg: String? = null, tr: Throwable? = null) {
-        doTheStuff(LogType.D, tag, msg ?: "", tr)
+        actionLog(LogType.D, tag, msg ?: "", tr)
     }
 
     /**
@@ -162,7 +162,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun v(tag: String, msg: String? = null, tr: Throwable? = null) {
-        doTheStuff(LogType.V, tag, msg ?: "", tr)
+        actionLog(LogType.V, tag, msg ?: "", tr)
     }
 
     /**
@@ -208,7 +208,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun e(tag: String, msg: String? = null, tr: Throwable? = null, forceReport: Boolean = false) {
-        doTheStuff(LogType.E, tag, msg ?: "", tr, forceReport)
+        actionLog(LogType.E, tag, msg ?: "", tr, forceReport)
     }
 
     /**
@@ -254,7 +254,7 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun w(tag: String, msg: String? = null, tr: Throwable? = null) {
-        doTheStuff(LogType.W, tag, msg ?: "", tr)
+        actionLog(LogType.W, tag, msg ?: "", tr)
     }
 
     /**
@@ -300,10 +300,10 @@ abstract class FlexiLog {
      */
     @JvmOverloads
     fun wtf(tag: String, msg: String? = null, tr: Throwable? = null) {
-        doTheStuff(LogType.WTF, tag, msg ?: "", tr)
+        actionLog(LogType.WTF, tag, msg ?: "", tr)
     }
 
-    private fun doTheStuff(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+    private fun actionLog(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
         logToConsole(type, tag, msg, tr)
         reportInternal(type, tag, msg, tr, forceReport)
         writeToFileInternal(type, tag, msg, tr)
@@ -358,7 +358,7 @@ abstract class FlexiLog {
      *
      * This can be used to ignore certain types of exceptions.
      */
-    abstract fun shouldReportException(tr: Throwable): Boolean
+    protected abstract fun shouldReportException(tr: Throwable): Boolean
 
     private fun writeToFileInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
         if(shouldLogToFile(type)) {
@@ -373,7 +373,7 @@ abstract class FlexiLog {
      * @param tag [Class] The Log tag
      * @param msg [String] The Log message.
      */
-    abstract fun report(type: LogType, tag: String, msg: String)
+    protected abstract fun report(type: LogType, tag: String, msg: String)
 
     /**
      * Implement the actual reporting.
@@ -383,31 +383,93 @@ abstract class FlexiLog {
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
-    abstract fun report(type: LogType, tag: String, msg: String, tr: Throwable)
+    protected abstract fun report(type: LogType, tag: String, msg: String, tr: Throwable)
 
     /**
      * Used to determine if we should Lod to the console or not.
      */
-    abstract fun canLogToConsole(type: LogType): Boolean
+    protected abstract fun canLogToConsole(type: LogType): Boolean
 
     /**
      * Used to determine if we should send a report (to Crashlytics or equivalent)
      */
-    abstract fun shouldReport(type: LogType): Boolean
+    protected abstract fun shouldReport(type: LogType): Boolean
 
     /**
      * Used to determine if we should call [writeLogToFile]
      */
-    open fun shouldLogToFile(type: LogType): Boolean {
+    protected open fun shouldLogToFile(type: LogType): Boolean {
         return false
     }
 
     /**
      * Implement writing of the Log to your file.
      */
-    open fun writeLogToFile(type: LogType, tag: String, msg: String, tr: Throwable?) {
+    protected open fun writeLogToFile(type: LogType, tag: String, msg: String, tr: Throwable?) {
         //does nothing - override to implement writing to file
     }
+
+    /**
+     * Create a breadcrumb
+     *
+     * @param caller Any object, the Class name will be used as the 'tag' in the breadcrumb message
+     * @param message The message for the breadcrumb
+     */
+    fun breadCrumb(caller: Any, message: String) {
+        breadCrumb(getClassName(caller), message)
+    }
+
+    /**
+     * Create a breadcrumb
+     *
+     * @param caller Class object, the Class name will be used as the 'tag' in the breadcrumb message
+     * @param message The message for the breadcrumb
+     */
+    fun breadCrumb(caller: Class<*>, message: String) {
+        breadCrumb(getClassName(caller), message)
+    }
+
+    /**
+     * Create a breadcrumb
+     *
+     * @param tag String used to construct the breadcrumb message using [formatBreadcrumbMessage]
+     * @param message The message for the breadcrumb
+     */
+    fun breadCrumb(tag: String, message: String) {
+        if(shouldLogBreadcrumbs()) {
+            logBreadcrumb(formatBreadcrumbMessage(tag, message))
+        }
+    }
+
+    /**
+     * Create a breadcrumb
+     *
+     * @param message The message for the breadcrumb
+     */
+    fun breadCrumb(message: String) {
+        if(shouldLogBreadcrumbs()) {
+            logBreadcrumb(message)
+        }
+    }
+
+    /**
+     * Join the [tag] and [message] into a single string.
+     *
+     * The base implementation constructs the string with the format "[tag]::[message]"
+     */
+    open fun formatBreadcrumbMessage(tag: String, message: String): String {
+        return if(tag.isBlank()) message else "$tag::$message"
+    }
+
+    /**
+     * Determine if the breadcrumb should be reported or not.
+     */
+    protected abstract fun shouldLogBreadcrumbs(): Boolean
+
+    /**
+     * Implement Breadcrumb report.
+     */
+    protected abstract fun logBreadcrumb(message: String)
 
     companion object {
         private const val CLASS = "class: "
