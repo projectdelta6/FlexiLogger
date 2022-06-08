@@ -1,1 +1,3 @@
 include ':flexilogger'
+include ':FlexiLogger-Sentry'
+include ':Flexilogger-Helper'

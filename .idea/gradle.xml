@@ -11,6 +11,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/FlexiLogger-Sentry" />
+            <option value="$PROJECT_DIR$/Flexilogger-Helper" />
             <option value="$PROJECT_DIR$/flexilogger" />
           </set>
         </option>

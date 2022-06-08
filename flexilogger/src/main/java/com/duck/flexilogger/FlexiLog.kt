@@ -1,5 +1,7 @@
 package com.duck.flexilogger
 
+import com.duck.flexilogger.helper.LogType
+
 /**
  * Created by Bradley Duck on 2019/02/14.
  * <p/>

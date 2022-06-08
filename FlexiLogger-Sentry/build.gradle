@@ -32,5 +32,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.8.0'
+
+    implementation project(path: ':flexilogger')
+    //Sentry
+    implementation 'io.sentry:sentry-android:5.7.0'
     implementation project(path: ':Flexilogger-Helper')
 }
