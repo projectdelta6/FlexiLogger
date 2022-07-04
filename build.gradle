@@ -2,10 +2,10 @@
 
 buildscript {
     ext {
-        AppVersionCode = 19
-        AppVersionName = "1.19"
+        AppVersionCode = 21
+        AppVersionName = "1.21"
         //-------------------------------
-        kotlin_version = '1.6.21'
+        kotlin_version = '1.7.0'
         dokkaVersion = '0.9.17'
     }
     repositories {
