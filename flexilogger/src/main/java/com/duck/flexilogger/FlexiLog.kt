@@ -306,7 +306,7 @@ abstract class FlexiLog {
     protected fun actionLog(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
         logToConsole(type, tag, msg, tr)
         reportInternal(type, tag, msg, tr, forceReport)
-        writeToFileInternal(type, tag, msg, tr)
+        writeToFileInternal(System.currentTimeMillis(), type, tag, msg, tr)
     }
 
     /**
@@ -360,9 +360,9 @@ abstract class FlexiLog {
      */
     protected abstract fun shouldReportException(tr: Throwable): Boolean
 
-    protected fun writeToFileInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null) {
+    protected fun writeToFileInternal(timestamp: Long, type: LogType, tag: String, msg: String, tr: Throwable? = null) {
         if(shouldLogToFile(type)) {
-            writeLogToFile(type, tag, msg, tr)
+            writeLogToFile(timestamp, type, tag, msg, tr)
         }
     }
 
@@ -404,8 +404,15 @@ abstract class FlexiLog {
 
     /**
      * Implement writing of the Log to your file.
+     * This will be called if [shouldLogToFile] returns true.
+     *
+     * @param timestamp [Long] The timestamp of the log.
+     * @param type [Int] @[LogType], the type of log this came from.
+     * @param tag [Class] The Log tag
+     * @param msg [String] The Log message.
+     * @param tr  [Throwable] to be attached to the Log.
      */
-    protected open fun writeLogToFile(type: LogType, tag: String, msg: String, tr: Throwable?) {
+    protected open fun writeLogToFile(timestamp: Long, type: LogType, tag: String, msg: String, tr: Throwable?) {
         //does nothing - override to implement writing to file
     }
 
