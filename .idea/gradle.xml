@@ -11,7 +11,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/flexilogger" />
+            <option value="$PROJECT_DIR$/Flexilogger" />
+            <option value="$PROJECT_DIR$/Flexilogger-Helper" />
+            <option value="$PROJECT_DIR$/Flexilogger-Sentry" />
           </set>
         </option>
       </GradleProjectSettings>

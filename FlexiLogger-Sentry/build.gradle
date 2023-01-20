@@ -7,13 +7,12 @@ plugins {
 group = 'com.github.projectdelta6'
 
 android {
-    compileSdkVersion 33
+    compileSdkVersion 32
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 33
+        targetSdkVersion 32
         versionCode AppVersionCode
         versionName AppVersionName
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -32,6 +31,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.8.0'
+
+    implementation project(path: ':Flexilogger')
     implementation project(path: ':Flexilogger-Helper')
+    //Sentry
+    implementation 'io.sentry:sentry-android:5.7.0'
 }

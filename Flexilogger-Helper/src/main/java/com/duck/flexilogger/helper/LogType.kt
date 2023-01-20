@@ -1,4 +1,4 @@
-package com.duck.flexilogger
+package com.duck.flexilogger.helper
 
 enum class LogType {
     D,
