@@ -72,6 +72,18 @@ abstract class FlexiLog {
     fun i(tag: String, msg: String? = null, tr: Throwable? = null) {
         actionLog(LogType.I, tag, msg ?: "", tr)
     }
+    fun i(condition: Boolean, log: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = log()
+            i(tag, msg, tr)
+        }
+    }
+    fun i(condition: () -> Boolean, log: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = log()
+            i(tag, msg, tr)
+        }
+    }
 
     /**
      * Calls [d].
