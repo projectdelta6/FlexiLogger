@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.dokka-android'
 }
 
+//for JitPack
 group = 'com.github.projectdelta6'
 
 android {
@@ -11,8 +12,6 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 33
-        versionCode 21
-        versionName "1.$versionCode"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
