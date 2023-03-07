@@ -62,6 +62,32 @@ abstract class FlexiLog {
     }
 
     /**
+     * Calls [i] if the condition is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun i(condition: Boolean, logInfo: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = logInfo()
+            i(tag, msg, tr)
+        }
+    }
+
+    /**
+     * Calls [i] if the condition returns true.
+     *
+     * @param condition [() -> Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun i(condition: () -> Boolean, logInfo: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = logInfo()
+            i(tag, msg, tr)
+        }
+    }
+
+    /**
      * Implement the actual Logging.
      *
      * @param tag [Class] The Log tag
@@ -104,6 +130,32 @@ abstract class FlexiLog {
             d(getClassName(caller), message)
         } else {
             d(getClassName(caller), message, tr)
+        }
+    }
+
+    /**
+     * Calls [d] if the condition is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun d(condition: Boolean, logInfo: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = logInfo()
+            d(tag, msg, tr)
+        }
+    }
+
+    /**
+     * Calls [d] if the condition returns true.
+     *
+     * @param condition [() -> Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun d(condition: () -> Boolean, logInfo: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = logInfo()
+            d(tag, msg, tr)
         }
     }
 
@@ -154,6 +206,32 @@ abstract class FlexiLog {
     }
 
     /**
+     * Calls [v] if the condition is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun v(condition: Boolean, logInfo: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = logInfo()
+            v(tag, msg, tr)
+        }
+    }
+
+    /**
+     * Calls [v] if the condition returns true.
+     *
+     * @param condition [() -> Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun v(condition: () -> Boolean, logInfo: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = logInfo()
+            v(tag, msg, tr)
+        }
+    }
+
+    /**
      * Implement the actual Logging.
      *
      * @param tag [Class] The Log tag
@@ -196,6 +274,32 @@ abstract class FlexiLog {
             e(getClassName(caller), message, forceReport = forceReport)
         } else {
             e(getClassName(caller), message, tr, forceReport)
+        }
+    }
+
+    /**
+     * Calls [e] if the condition is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun e(condition: Boolean, logInfo: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = logInfo()
+            e(tag, msg, tr)
+        }
+    }
+
+    /**
+     * Calls [e] if the condition returns true.
+     *
+     * @param condition [() -> Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun e(condition: () -> Boolean, logInfo: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = logInfo()
+            e(tag, msg, tr)
         }
     }
 
@@ -246,6 +350,32 @@ abstract class FlexiLog {
     }
 
     /**
+     * Calls [w] if the condition is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun w(condition: Boolean, logInfo: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = logInfo()
+            w(tag, msg, tr)
+        }
+    }
+
+    /**
+     * Calls [w] if the condition returns true.
+     *
+     * @param condition [() -> Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun w(condition: () -> Boolean, logInfo: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = logInfo()
+            w(tag, msg, tr)
+        }
+    }
+
+    /**
      * Implement the actual Logging.
      *
      * @param tag [Class] The Log tag
@@ -288,6 +418,32 @@ abstract class FlexiLog {
             wtf(getClassName(caller), message)
         } else {
             wtf(getClassName(caller), message, tr)
+        }
+    }
+
+    /**
+     * Calls [wtf] if the condition is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun wtf(condition: Boolean, logInfo: () -> LogInfo) {
+        if(condition) {
+            val (tag, msg, tr) = logInfo()
+            wtf(tag, msg, tr)
+        }
+    }
+
+    /**
+     * Calls [wtf] if the condition returns true.
+     *
+     * @param condition [() -> Boolean] The condition to check.
+     * @param logInfo   [() -> LogInfo][LogInfo] The LogInfo to be logged.
+     */
+    fun wtf(condition: () -> Boolean, logInfo: () -> LogInfo) {
+        if(condition()) {
+            val (tag, msg, tr) = logInfo()
+            wtf(tag, msg, tr)
         }
     }
 
