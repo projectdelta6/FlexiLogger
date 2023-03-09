@@ -33,9 +33,9 @@ abstract class FlexiLog {
      * @param condition [Boolean] The condition to check.
      * @param log [FlexiLog.() -> Unit] The Log to call if the condition is true.
      */
-    fun onCondition(condition: Boolean, log: FlexiLog.() -> Unit) {
+    fun onCondition(condition: Boolean, log: (FlexiLog) -> Unit) {
         if(condition) {
-            this.log()
+            log(this)
         }
     }
 
