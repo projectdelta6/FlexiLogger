@@ -14,7 +14,7 @@ abstract class FlexiLog {
      * @return [String] The simple Name of the Object's Class.
      */
     protected fun getClassName(o: Any): String {
-        return CLASS + o.javaClass.simpleName
+        return o.javaClass.simpleName
     }
 
     /**
@@ -24,7 +24,7 @@ abstract class FlexiLog {
      * @return [String] The simple Name of the Class.
      */
     protected fun getClassName(clazz: Class<*>): String {
-        return CLASS + clazz.simpleName
+        return clazz.simpleName
     }
 
     /**
@@ -438,9 +438,5 @@ abstract class FlexiLog {
      */
     protected open fun writeLogToFile(timestamp: Long, type: LogType, tag: String, msg: String, tr: Throwable?) {
         //does nothing - override to implement writing to file
-    }
-
-    companion object {
-        protected const val CLASS = "class: "
     }
 }
