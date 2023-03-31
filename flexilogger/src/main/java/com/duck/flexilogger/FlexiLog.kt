@@ -40,6 +40,18 @@ abstract class FlexiLog {
     }
 
     /**
+     * Only calls [log] if the [condition] is true.
+     *
+     * @param condition [Boolean] The condition to check.
+     * @param log [FlexiLog.() -> Unit] The Log to call if the condition is true.
+     */
+    suspend fun onConditionSuspend(condition: Boolean, log: suspend (FlexiLog) -> Unit) {
+        if(condition) {
+            log(this)
+        }
+    }
+
+    /**
      * Calls [i].
      *
      * @param caller [Any] The caller of this method. This will be used to get the Class name of the Object.
