@@ -328,7 +328,19 @@ abstract class FlexiLog {
     }
 
     protected fun actionLog(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
-        logToConsole(type, tag, msg, tr)
+        if(msg.length > 4000) {
+            val chopDown = msg.chopDown(4000)
+            for ((i, chop) in chopDown.withIndex()) {
+                //if i is last do something
+                if(i == chopDown.lastIndex) {
+                    logToConsole(type, tag, chop, tr)
+                } else {
+                    logToConsole(type, tag, chop)
+                }
+            }
+        } else {
+            logToConsole(type, tag, msg, tr)
+        }
         reportInternal(type, tag, msg, tr, forceReport)
         writeToFileInternal(System.currentTimeMillis(), type, tag, msg, tr)
     }
@@ -439,4 +451,19 @@ abstract class FlexiLog {
     protected open fun writeLogToFile(timestamp: Long, type: LogType, tag: String, msg: String, tr: Throwable?) {
         //does nothing - override to implement writing to file
     }
+}
+
+private fun String.chopDown(maxLength: Int = 4000): List<String> {
+    val list = mutableListOf<String>()
+    var start = 0
+    var end = maxLength
+    while (start < length) {
+        if (end > length) {
+            end = length
+        }
+        list.add(substring(start, end))
+        start = end
+        end += maxLength
+    }
+    return list
 }
