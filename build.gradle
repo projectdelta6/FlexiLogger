@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.9.0'
+        kotlin_version = '1.9.22'
         dokkaVersion = '0.9.17'
     }
     repositories {
@@ -10,7 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokkaVersion"
@@ -31,6 +31,6 @@ task clean(type: Delete) {
 }
 
 wrapper {
-    gradleVersion = "8.1.2"
+    gradleVersion = "8.3.0"
     distributionType = Wrapper.DistributionType.ALL
 }
