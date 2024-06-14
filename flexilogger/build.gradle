@@ -31,7 +31,7 @@ android {
     }
     dokka {
         outputFormat = 'html'
-        outputDirectory = "$buildDir/javadoc"
+        outputDirectory = "${getLayout().getBuildDirectory()}/javadoc"
     }
 }
 
