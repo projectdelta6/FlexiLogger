@@ -5,10 +5,6 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
 }
 
-tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
-}
-
 tasks.wrapper {
     gradleVersion = libs.versions.agp.get()
     distributionType = Wrapper.DistributionType.ALL
