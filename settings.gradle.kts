@@ -20,5 +20,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "FlexiLogger"
-include(":flexilogger")
 include(":app")
+include(":FlexiLogger")
+include(":FlexiHttpLogger")
