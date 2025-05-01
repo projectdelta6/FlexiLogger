@@ -9,10 +9,10 @@ group = 'com.github.projectdelta6'
 
 android {
     namespace 'com.duck.flexilogger'
-    compileSdk 34
+    compileSdk 36
     defaultConfig {
         minSdkVersion 19
-        targetSdk 34
+        targetSdk 36
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,7 +31,7 @@ android {
     }
     dokka {
         outputFormat = 'html'
-        outputDirectory = "$buildDir/javadoc"
+        outputDirectory = "${getLayout().getBuildDirectory()}/javadoc"
     }
 }
 
