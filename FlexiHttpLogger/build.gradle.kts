@@ -10,11 +10,11 @@ android {
     namespace = "com.duck.flexilogger.flexihttplogger"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
-    publishing {
-        singleVariant("release") {
-            withSourcesJar()
-        }
-    }
+//    publishing {
+//        singleVariant("release") {
+//            withSourcesJar()
+//        }
+//    }
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
@@ -33,8 +33,12 @@ android {
         }
         // Add debug build type if not present and add matchingFallbacks
         debug {
-            matchingFallbacks += listOf("release")
-            // Add any other debug-specific configurations if needed
+//            matchingFallbacks += listOf("release")
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
