@@ -31,6 +31,11 @@ android {
                 "proguard-rules.pro"
             )
         }
+        // Add debug build type if not present and add matchingFallbacks
+        debug {
+            matchingFallbacks += listOf("release")
+            // Add any other debug-specific configurations if needed
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
