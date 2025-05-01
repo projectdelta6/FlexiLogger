@@ -10,11 +10,12 @@ android {
     namespace = "com.duck.flexilogger.flexihttplogger"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
-//    publishing {
-//        singleVariant("release") {
-//            withSourcesJar()
-//        }
-//    }
+    publishing {
+        multipleVariants {
+            allVariants()
+            withSourcesJar()
+        }
+    }
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()

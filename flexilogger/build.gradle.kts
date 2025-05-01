@@ -11,7 +11,8 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     publishing {
-        singleVariant("release") {
+        multipleVariants {
+            allVariants()
             withSourcesJar()
         }
     }
@@ -23,6 +24,10 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+        debug {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
