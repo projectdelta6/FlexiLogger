@@ -11,8 +11,7 @@ android {
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     publishing {
-        multipleVariants {
-            allVariants()
+        singleVariant("release") {
             withSourcesJar()
         }
     }
@@ -27,10 +26,10 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        debug {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
+//        debug {
+//            isMinifyEnabled = false
+//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+//        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

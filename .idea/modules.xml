@@ -3,18 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/FlexiLogger.iml" filepath="$PROJECT_DIR$/.idea/FlexiLogger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.iml" filepath="$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FlexiHttpLogger/FlexiLogger.FlexiHttpLogger.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.main.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.FlexiLogger.unitTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.androidTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FlexiLogger.app.unitTest.iml" />
     </modules>
   </component>
 </project>
