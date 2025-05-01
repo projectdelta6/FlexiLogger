@@ -11,6 +11,10 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.main.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.iml" filepath="$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/TestApp/PersonalProjects.FlexiLogger.TestApp.unitTest.iml" />
     </modules>
   </component>
 </project>
