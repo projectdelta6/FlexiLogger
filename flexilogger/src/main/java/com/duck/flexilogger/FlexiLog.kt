@@ -451,6 +451,15 @@ abstract class FlexiLog {
     protected open fun writeLogToFile(timestamp: Long, type: LogType, tag: String, msg: String, tr: Throwable?) {
         //does nothing - override to implement writing to file
     }
+
+    /**
+     * Returns a [LoggerWithLevel] with the given [LoggingLevel].
+     * This can be used to
+     *
+     * @param level [LoggingLevel] The level to set.
+     * @return [LoggerWithLevel] The new LoggerWithLevel.
+     */
+    fun withLevel(level: LoggingLevel) = LoggerWithLevel(level, this)
 }
 
 private fun String.chopDown(maxLength: Int = 4000): List<String> {
