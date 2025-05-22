@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 	}
 }
 ```
-or in your `settings.gradle` with:
+or in your `settings.gradle.kts` with:
 ```gradle
 allprojects {
     repositories {
@@ -36,7 +36,7 @@ flexiLoggerVersion = "Tag"
 
 `[libraries]`
 ```toml
-#AppolyDroid-Toolbox
+#FlexiLogger
 flexiLogger = { group = "com.github.projectdelta6", name = "FlexiLogger", version.ref = "flexiLoggerVersion" }
 flexiLogger-httpLogger = { group = "com.github.projectdelta6", name = "FlexiHttpLogger", version.ref = "flexiLoggerVersion" }
 ```
@@ -44,7 +44,7 @@ flexiLogger-httpLogger = { group = "com.github.projectdelta6", name = "FlexiHttp
 `build.gradle.kts`
 ```gradle.kts
 dependencies {
-    //AppolyDroid-Toolbox
+    //FlexiLogger
     implementation(libs.flexiLogger)
     implementation(libs.flexiLogger.httpLogger)
 }
@@ -55,7 +55,7 @@ or without version catalog:
 `build.gradle.kts`
 ```gradle.kts
 dependencies {
-    //AppolyDroid-Toolbox
+    //FlexiLogger
     implementation("com.github.projectdelta6:FlexiLogger:Tag")
     implementation("com.github.projectdelta6:FlexiHttpLogger:Tag")
 }
