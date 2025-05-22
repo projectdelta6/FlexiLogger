@@ -49,7 +49,7 @@ dependencies {
     // Use version catalog references for dependencies
     implementation(libs.androidx.core.ktx)
 
-    implementation(project(":flexilogger"))
+    api(project(":flexilogger"))
     api(libs.logging.interceptor)
 
     // Test dependencies from version catalog
