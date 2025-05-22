@@ -37,7 +37,7 @@ flexiLoggerVersion = "Tag"
 `[libraries]`
 ```toml
 #FlexiLogger
-flexiLogger = { group = "com.github.projectdelta6", name = "FlexiLogger", version.ref = "flexiLoggerVersion" }
+flexiLogger = { group = "com.github.projectdelta6.FlexiLogger", name = "flexiLogger", version.ref = "flexiLoggerVersion" }
 flexiLogger-httpLogger = { group = "com.github.projectdelta6.FlexiLogger", name = "FlexiHttpLogger", version.ref = "flexiLoggerVersion" }
 ```
 
