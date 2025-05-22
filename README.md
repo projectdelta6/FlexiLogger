@@ -38,7 +38,7 @@ flexiLoggerVersion = "Tag"
 ```toml
 #FlexiLogger
 flexiLogger = { group = "com.github.projectdelta6", name = "FlexiLogger", version.ref = "flexiLoggerVersion" }
-flexiLogger-httpLogger = { group = "com.github.projectdelta6", name = "FlexiHttpLogger", version.ref = "flexiLoggerVersion" }
+flexiLogger-httpLogger = { group = "com.github.projectdelta6.FlexiLogger", name = "FlexiHttpLogger", version.ref = "flexiLoggerVersion" }
 ```
 
 `build.gradle.kts`
