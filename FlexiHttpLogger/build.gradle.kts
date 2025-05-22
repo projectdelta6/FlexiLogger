@@ -4,8 +4,11 @@ plugins {
     `maven-publish`
 }
 
+// For JitPack
+group = "com.github.projectdelta6"
+
 android {
-    namespace = "com.duck.flexilogger"
+    namespace = "com.duck.flexilogger.flexihttplogger"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     publishing {
@@ -43,9 +46,13 @@ android {
 }
 
 dependencies {
+    // Use version catalog references for dependencies
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
 
+    implementation(project(":flexilogger"))
+    api(libs.logging.interceptor)
+
+    // Test dependencies from version catalog
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.espresso.core)
