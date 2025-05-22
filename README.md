@@ -6,7 +6,18 @@ Android Logging helper to provide flexible Log methods.
 
 https://jitpack.io/#projectdelta6/FlexiLogger
 
-Add it to your build.gradle with:
+Add it to your `build.gradle.kts` with:
+```gradle.kts
+dependencyResolutionManagement {
+	repositories {
+		...
+		maven {
+			url = uri("https://jitpack.io")
+		}
+	}
+}
+```
+or in your `settings.gradle.kts` with:
 ```gradle
 allprojects {
     repositories {
@@ -15,14 +26,41 @@ allprojects {
     }
 }
 ```
-and:
 
-```gradle
+and: in your module with version catalog:
+
+`[versions]`
+```toml
+flexiLoggerVersion = "Tag"
+```
+
+`[libraries]`
+```toml
+#FlexiLogger
+flexiLogger = { group = "com.github.projectdelta6", name = "FlexiLogger", version.ref = "flexiLoggerVersion" }
+flexiLogger-httpLogger = { group = "com.github.projectdelta6", name = "FlexiHttpLogger", version.ref = "flexiLoggerVersion" }
+```
+
+`build.gradle.kts`
+```gradle.kts
 dependencies {
-    compile 'com.github.projectdelta6:FlexiLogger:{desired version}'
+    //FlexiLogger
+    implementation(libs.flexiLogger)
+    implementation(libs.flexiLogger.httpLogger)
 }
 ```
 
+or without version catalog:
+
+`build.gradle.kts`
+```gradle.kts
+dependencies {
+    //FlexiLogger
+    implementation("com.github.projectdelta6:FlexiLogger:Tag")
+    implementation("com.github.projectdelta6:FlexiHttpLogger:Tag")
+}
+```
+# FlexiLogger
 ## Setup
 Create a class that extends FlexiLog.  I have found it is best to create this class as a kotlin object called Log at the root of your project. 
 ```kotlin
