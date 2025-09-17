@@ -1,9 +1,23 @@
 package com.duck.flexilogger
 
 class LoggerWithLevel(
-    private val level: LoggingLevel,
-    private val logger: FlexiLog
+    private var level: LoggingLevel,
+    private var logger: FlexiLog
 ) {
+    /**
+     * Update the logger implementation and/or the logging level.
+     *
+     * @param newLogger [FlexiLog] The new logger implementation. Default is the current logger.
+     * @param newLevel  [LoggingLevel] The new logging level. Default is the current level.
+     */
+    @JvmOverloads
+    fun updateLogger(
+        newLogger: FlexiLog = logger,
+        newLevel: LoggingLevel = level
+    ) {
+        this.logger = newLogger
+    }
+
     /**
      * Calls [i].
      *
