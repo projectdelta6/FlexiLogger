@@ -16,6 +16,7 @@ class LoggerWithLevel(
         newLevel: LoggingLevel = level
     ) {
         this.logger = newLogger
+        this.level = newLevel
     }
 
     /**
