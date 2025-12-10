@@ -11,6 +11,6 @@ tasks.register("clean", Delete::class) {
 }
 
 tasks.wrapper {
-    gradleVersion = "8.11.1"
+    gradleVersion = libs.versions.agp.get()
     distributionType = Wrapper.DistributionType.ALL
 }

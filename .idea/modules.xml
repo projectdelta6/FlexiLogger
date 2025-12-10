@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.iml" filepath="$PROJECT_DIR$/.idea/modules/flexilogger/FlexiLogger.flexilogger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/FlexiLogger.iml" filepath="$PROJECT_DIR$/.idea/FlexiLogger.iml" />
     </modules>
   </component>
 </project>
