@@ -20,6 +20,15 @@ class LoggerWithLevel(
     }
 
     /**
+     * Check if a LogType can be logged based on the current LoggingLevel.
+     *
+     * @param logType [LogType] The LogType to check.
+     * @return [Boolean] True if the LogType can be logged, False otherwise.
+     */
+    fun canLog(logType: LogType): Boolean =
+        level.canLog(logType)
+
+    /**
      * Calls [i].
      *
      * @param caller [Any] The caller of this method. This will be used to get the Class name of the Object.
