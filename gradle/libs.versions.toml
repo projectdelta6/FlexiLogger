@@ -4,8 +4,8 @@ targetSdk = "36"
 minSdk = "21"
 flexiLoggerVersion = "1.36.3"
 # Plugin versions
-agp = "8.13.1"
-kotlin = "2.2.21"
+agp = "8.13.2"
+kotlin = "2.3.0"
 
 # Library versions
 core-ktx = "1.17.0"
