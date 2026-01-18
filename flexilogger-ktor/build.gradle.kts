@@ -10,7 +10,7 @@ plugins {
 kotlin {
     // Android target (new KMP plugin)
     androidLibrary {
-        namespace = "com.duck.flexilogger"
+        namespace = "com.duck.flexilogger.ktor"
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
 
@@ -36,19 +36,12 @@ kotlin {
     // Source sets
     sourceSets {
         commonMain.dependencies {
-            // No dependencies needed for core
+            api(project(":flexilogger"))
+            implementation(libs.ktor.client.core)
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-        }
-
-        androidMain.dependencies {
-            // Android-specific dependencies if needed
-        }
-
-        jvmMain.dependencies {
-            // JVM-specific dependencies if needed
         }
     }
 }
@@ -57,13 +50,13 @@ mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
 
-    coordinates("io.github.projectdelta6", "flexilogger", libs.versions.flexiLoggerVersion.get())
+    coordinates("io.github.projectdelta6", "flexilogger-ktor", libs.versions.flexiLoggerVersion.get())
 
     pom {
-        name.set("FlexiLogger")
-        description.set("Kotlin Multiplatform logging library providing flexible, configurable logging with support for console output, crash reporting integration, and file logging.")
+        name.set("FlexiLogger Ktor")
+        description.set("Ktor HTTP client logging plugin for FlexiLogger.")
         url.set("https://github.com/projectdelta6/FlexiLogger")
-        inceptionYear.set("2020")
+        inceptionYear.set("2024")
 
         licenses {
             license {

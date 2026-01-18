@@ -10,9 +10,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/FlexiHttpLogger" />
             <option value="$PROJECT_DIR$/TestApp" />
             <option value="$PROJECT_DIR$/flexilogger" />
+            <option value="$PROJECT_DIR$/flexilogger-ktor" />
+            <option value="$PROJECT_DIR$/flexilogger-okhttp" />
           </set>
         </option>
       </GradleProjectSettings>
