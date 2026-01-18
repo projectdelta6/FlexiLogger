@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
     implementation(project(":flexilogger"))
-    implementation(project(":FlexiHttpLogger"))
+    implementation(project(":flexilogger-okhttp"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext)
     androidTestImplementation(libs.espresso.core)

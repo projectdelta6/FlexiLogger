@@ -34,25 +34,18 @@ kotlin {
     // Source sets
     sourceSets {
         commonMain.dependencies {
-            // No dependencies needed for core
+            api(project(":flexilogger"))
+            implementation(libs.ktor.client.core)
         }
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-
-        androidMain.dependencies {
-            // Android-specific dependencies if needed
-        }
-
-        jvmMain.dependencies {
-            // JVM-specific dependencies if needed
-        }
     }
 }
 
 android {
-    namespace = "com.duck.flexilogger"
+    namespace = "com.duck.flexilogger.ktor"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

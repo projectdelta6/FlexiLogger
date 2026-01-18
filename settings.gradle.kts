@@ -24,5 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "FlexiLogger"
 include(":flexilogger")
+include(":flexilogger-okhttp")
+include(":flexilogger-ktor")
 include(":TestApp")
-include(":FlexiHttpLogger")

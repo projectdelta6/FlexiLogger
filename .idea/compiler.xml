@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="11">
+      <module name="FlexiLogger.flexilogger-ktor" target="19" />
+      <module name="FlexiLogger.flexilogger-ktor.jvmMain" target="19" />
+      <module name="FlexiLogger.flexilogger-ktor.jvmTest" target="19" />
+      <module name="FlexiLogger.flexilogger-okhttp" target="19" />
+      <module name="FlexiLogger.flexilogger-okhttp.jvmMain" target="19" />
+      <module name="FlexiLogger.flexilogger-okhttp.jvmTest" target="19" />
+      <module name="FlexiLogger.flexilogger.jvmMain" target="19" />
+      <module name="FlexiLogger.flexilogger.jvmTest" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>

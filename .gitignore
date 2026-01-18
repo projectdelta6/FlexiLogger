@@ -39,3 +39,4 @@ captures/
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 /.kotlin/sessions/
+/.claude/settings.local.json
