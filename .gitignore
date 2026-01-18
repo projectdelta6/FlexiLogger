@@ -40,3 +40,4 @@ captures/
 .externalNativeBuild
 /.kotlin/sessions/
 /.claude/settings.local.json
+/.kotlin
