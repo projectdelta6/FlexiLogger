@@ -4,8 +4,9 @@ targetSdk = "36"
 minSdk = "21"
 flexiLoggerVersion = "2.0.0"
 # Plugin versions
-agp = "8.13.2"
+agp = "9.0.0"
 kotlin = "2.3.0"
+vanniktechPublish = "0.30.0"
 
 # Library versions
 core-ktx = "1.17.0"
@@ -43,5 +44,7 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechPublish" }

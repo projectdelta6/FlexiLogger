@@ -4,7 +4,7 @@ Kotlin Multiplatform logging library providing flexible, configurable logging wi
 
 **Supported Platforms:** Android, iOS, JVM (Desktop), JavaScript (Browser/Node.js)
 
-[![Release](https://jitpack.io/v/projectdelta6/FlexiLogger.svg)](https://jitpack.io/#projectdelta6/FlexiLogger)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.projectdelta6/flexilogger.svg)](https://central.sonatype.com/artifact/io.github.projectdelta6/flexilogger)
 
 ## Features
 
@@ -19,36 +19,46 @@ Kotlin Multiplatform logging library providing flexible, configurable logging wi
 
 ## Installation
 
-> **Note:** Maven Central publishing is planned but not yet configured. For now, you can use the library via JitPack (Android only) or by including it as a local/git dependency.
+### Maven Central (Recommended)
 
-### Kotlin Multiplatform Projects
+Add the dependency to your project:
 
-Add the library as a git submodule or include it directly in your project, then add the dependency:
-
+**Kotlin Multiplatform:**
 ```kotlin
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":flexilogger"))
+            implementation("io.github.projectdelta6:flexilogger:2.0.0")
 
             // Optional: Ktor HTTP logging (all platforms)
-            implementation(project(":flexilogger-ktor"))
+            implementation("io.github.projectdelta6:flexilogger-ktor:2.0.0")
         }
 
         // Optional: OkHttp HTTP logging (JVM/Android only)
         jvmMain.dependencies {
-            implementation(project(":flexilogger-okhttp"))
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.0.0")
         }
         androidMain.dependencies {
-            implementation(project(":flexilogger-okhttp"))
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.0.0")
         }
     }
 }
 ```
 
-### Android Projects (JitPack)
+**Android/JVM only:**
+```kotlin
+dependencies {
+    implementation("io.github.projectdelta6:flexilogger:2.0.0")
+    implementation("io.github.projectdelta6:flexilogger-okhttp:2.0.0")  // Optional
+}
+```
 
-> **Note:** JitPack support for KMP is limited. This will work for Android consumption but not for iOS/JS targets.
+### JitPack (Legacy 1.x Versions)
+
+For projects still using the Android-only 1.x versions, JitPack remains available:
+
+<details>
+<summary>Click to expand JitPack instructions</summary>
 
 Add JitPack to your `settings.gradle.kts`:
 
@@ -63,12 +73,14 @@ dependencyResolutionManagement {
 **build.gradle.kts:**
 ```kotlin
 dependencies {
-    implementation("com.github.projectdelta6.FlexiLogger:flexilogger:Tag")
-    implementation("com.github.projectdelta6.FlexiLogger:flexilogger-okhttp:Tag")  // Optional
+    implementation("com.github.projectdelta6.FlexiLogger:FlexiLogger:1.x.x")
+    implementation("com.github.projectdelta6.FlexiLogger:FlexiHttpLogger:1.x.x")  // Optional
 }
 ```
 
-Replace `Tag` with the release tag or commit hash.
+Replace `1.x.x` with the desired [1.x release tag](https://github.com/projectdelta6/FlexiLogger/releases).
+
+</details>
 
 ## Usage
 

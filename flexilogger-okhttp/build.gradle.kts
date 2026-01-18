@@ -1,17 +1,19 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.android.library)
-    `maven-publish`
+    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.vanniktech.publish)
 }
 
 kotlin {
-    // Android target
-    androidTarget {
-        publishLibraryVariants("release")
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    // Android target (new KMP plugin)
+    androidLibrary {
+        namespace = "com.duck.flexilogger.okhttp"
+        compileSdk = libs.versions.compileSdk.get().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -33,34 +35,37 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.duck.flexilogger.okhttp"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
 
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-        consumerProguardFiles("consumer-rules.pro")
-    }
+    coordinates("io.github.projectdelta6", "flexilogger-okhttp", libs.versions.flexiLoggerVersion.get())
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+    pom {
+        name.set("FlexiLogger OkHttp")
+        description.set("OkHttp logging interceptor integration for FlexiLogger.")
+        url.set("https://github.com/projectdelta6/FlexiLogger")
+        inceptionYear.set("2020")
+
+        licenses {
+            license {
+                name.set("GNU General Public License v3.0")
+                url.set("https://www.gnu.org/licenses/gpl-3.0.html")
+            }
         }
-    }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
+        developers {
+            developer {
+                id.set("projectdelta6")
+                name.set("Bradley Duck")
+                email.set("projectdelta6@gmail.com")
+            }
+        }
 
-publishing {
-    publications.withType<MavenPublication> {
-        groupId = "com.duck.flexilogger"
-        version = libs.versions.flexiLoggerVersion.get()
+        scm {
+            url.set("https://github.com/projectdelta6/FlexiLogger")
+            connection.set("scm:git:git://github.com/projectdelta6/FlexiLogger.git")
+            developerConnection.set("scm:git:ssh://git@github.com/projectdelta6/FlexiLogger.git")
+        }
     }
 }
