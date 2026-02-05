@@ -28,3 +28,10 @@ internal actual fun getSimpleClassName(clazz: KClass<*>): String =
     clazz.simpleName ?: "Unknown"
 
 internal actual fun currentTimeMillis(): Long = Date.now().toLong()
+
+/**
+ * Call site capture is not reliably supported on JavaScript.
+ * Returns null as JS stack traces are not easily parseable in a cross-browser way.
+ */
+@Suppress("UNUSED_PARAMETER")
+internal actual fun captureCallSite(additionalSkipPackages: List<String>): CallSite? = null
