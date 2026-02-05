@@ -45,37 +45,69 @@ if [[ "$BRANCH" != "master" ]]; then
     fi
 fi
 
-# Check for required environment variables
-MISSING_ENV=false
+# Check for required credentials (environment variables or gradle.properties)
+GRADLE_PROPS="$HOME/.gradle/gradle.properties"
+HAS_USERNAME=false
+HAS_PASSWORD=false
+HAS_SIGNING=false
 
-if [[ -z "$ORG_GRADLE_PROJECT_mavenCentralUsername" ]] && [[ -z "$MAVEN_CENTRAL_USERNAME" ]]; then
-    echo_error "Missing Maven Central username. Set ORG_GRADLE_PROJECT_mavenCentralUsername or MAVEN_CENTRAL_USERNAME"
-    MISSING_ENV=true
+# Check environment variables
+if [[ -n "$ORG_GRADLE_PROJECT_mavenCentralUsername" ]] || [[ -n "$MAVEN_CENTRAL_USERNAME" ]]; then
+    HAS_USERNAME=true
+fi
+if [[ -n "$ORG_GRADLE_PROJECT_mavenCentralPassword" ]] || [[ -n "$MAVEN_CENTRAL_PASSWORD" ]]; then
+    HAS_PASSWORD=true
+fi
+if [[ -n "$ORG_GRADLE_PROJECT_signingInMemoryKey" ]] || [[ -n "$SIGNING_KEY" ]]; then
+    HAS_SIGNING=true
 fi
 
-if [[ -z "$ORG_GRADLE_PROJECT_mavenCentralPassword" ]] && [[ -z "$MAVEN_CENTRAL_PASSWORD" ]]; then
-    echo_error "Missing Maven Central password/token. Set ORG_GRADLE_PROJECT_mavenCentralPassword or MAVEN_CENTRAL_PASSWORD"
-    MISSING_ENV=true
-fi
-
-if [[ -z "$ORG_GRADLE_PROJECT_signingInMemoryKey" ]] && [[ -z "$SIGNING_KEY" ]]; then
-    if [[ ! -f ~/.gradle/gradle.properties ]] || ! grep -q "signing.gnupg" ~/.gradle/gradle.properties 2>/dev/null; then
-        echo_warn "No signing key found. Ensure GPG signing is configured in ~/.gradle/gradle.properties or via environment variables."
+# Check gradle.properties
+if [[ -f "$GRADLE_PROPS" ]]; then
+    if grep -q "^mavenCentralUsername=" "$GRADLE_PROPS" 2>/dev/null; then
+        HAS_USERNAME=true
+    fi
+    if grep -q "^mavenCentralPassword=" "$GRADLE_PROPS" 2>/dev/null; then
+        HAS_PASSWORD=true
+    fi
+    if grep -q "^signing\." "$GRADLE_PROPS" 2>/dev/null; then
+        HAS_SIGNING=true
     fi
 fi
 
-if [[ "$MISSING_ENV" == true ]]; then
+# Report missing credentials
+MISSING_CREDS=false
+
+if [[ "$HAS_USERNAME" == false ]]; then
+    echo_error "Missing Maven Central username."
+    MISSING_CREDS=true
+fi
+
+if [[ "$HAS_PASSWORD" == false ]]; then
+    echo_error "Missing Maven Central password/token."
+    MISSING_CREDS=true
+fi
+
+if [[ "$HAS_SIGNING" == false ]]; then
+    echo_warn "No signing configuration found."
+fi
+
+if [[ "$MISSING_CREDS" == true ]]; then
     echo ""
-    echo "Required environment variables:"
-    echo "  ORG_GRADLE_PROJECT_mavenCentralUsername - Maven Central username"
-    echo "  ORG_GRADLE_PROJECT_mavenCentralPassword - Maven Central password/token"
+    echo "Configure credentials in ~/.gradle/gradle.properties:"
+    echo "  mavenCentralUsername=your-username"
+    echo "  mavenCentralPassword=your-token"
+    echo "  signing.keyId=your-key-id"
+    echo "  signing.password=your-key-password"
+    echo "  signing.secretKeyRingFile=/path/to/secring.gpg"
     echo ""
-    echo "For signing (one of):"
-    echo "  ORG_GRADLE_PROJECT_signingInMemoryKey - ASCII-armored GPG key"
-    echo "  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword - Key password"
-    echo "  Or configure signing.gnupg.* in ~/.gradle/gradle.properties"
+    echo "Or via environment variables:"
+    echo "  ORG_GRADLE_PROJECT_mavenCentralUsername"
+    echo "  ORG_GRADLE_PROJECT_mavenCentralPassword"
     exit 1
 fi
+
+echo_info "Credentials found in gradle.properties"
 
 # Confirm publish
 echo ""
