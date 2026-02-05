@@ -75,9 +75,9 @@ class LoggingLevelTest {
 
     @Test
     fun levelValuesShouldBeInDescendingOrderFromVToNone() {
-        assertTrue(LoggingLevel.V.level > LoggingLevel.I.level)
-        assertTrue(LoggingLevel.I.level > LoggingLevel.D.level)
-        assertTrue(LoggingLevel.D.level > LoggingLevel.W.level)
+        assertTrue(LoggingLevel.V.level > LoggingLevel.D.level)
+        assertTrue(LoggingLevel.D.level > LoggingLevel.I.level)
+        assertTrue(LoggingLevel.I.level > LoggingLevel.W.level)
         assertTrue(LoggingLevel.W.level > LoggingLevel.E.level)
         assertTrue(LoggingLevel.E.level > LoggingLevel.NONE.level)
     }

@@ -41,3 +41,4 @@ captures/
 /.kotlin/sessions/
 /.claude/settings.local.json
 /.kotlin
+/kotlin-js-store/yarn.lock

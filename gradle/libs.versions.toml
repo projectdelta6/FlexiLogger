@@ -14,7 +14,6 @@ appcompat = "1.7.1"
 material = "1.13.0"
 constraintlayout = "2.2.1"
 junit = "4.13.2"
-kotlin-test = "2.3.0"
 androidx-test-ext = "1.3.0"
 espresso = "3.7.0"
 loggingInterceptor = "5.3.2"
@@ -37,7 +36,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 
 # Test dependencies
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 androidx-test-ext = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
 

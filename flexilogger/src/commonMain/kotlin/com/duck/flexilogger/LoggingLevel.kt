@@ -2,8 +2,8 @@ package com.duck.flexilogger
 
 enum class LoggingLevel(val level: Int) {
     V(5),
-    I(4),
-    D(3),
+    D(4),
+    I(3),
     W(2),
     E(1),
     NONE(0);
