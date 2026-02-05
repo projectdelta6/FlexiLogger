@@ -11,7 +11,8 @@ Kotlin Multiplatform logging library providing flexible, configurable logging wi
 - Cross-platform logging abstraction
 - Configurable log levels (Verbose, Debug, Info, Warning, Error, WTF)
 - Automatic message chunking for long messages (4000+ chars)
-- Crash reporting integration hooks
+- **Call site capture** for accurate crash reporting (Android/JVM)
+- Crash reporting integration hooks (Sentry, Crashlytics, etc.)
 - File logging support
 - OkHttp integration (JVM/Android)
 - Ktor HTTP client integration (all platforms)
@@ -28,18 +29,18 @@ Add the dependency to your project:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger:2.0.0")
+            implementation("io.github.projectdelta6:flexilogger:2.1.0")
 
             // Optional: Ktor HTTP logging (all platforms)
-            implementation("io.github.projectdelta6:flexilogger-ktor:2.0.0")
+            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.0")
         }
 
         // Optional: OkHttp HTTP logging (JVM/Android only)
         jvmMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.0.0")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.0")
         }
         androidMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.0.0")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.0")
         }
     }
 }
@@ -48,8 +49,8 @@ kotlin {
 **Android/JVM only:**
 ```kotlin
 dependencies {
-    implementation("io.github.projectdelta6:flexilogger:2.0.0")
-    implementation("io.github.projectdelta6:flexilogger-okhttp:2.0.0")  // Optional
+    implementation("io.github.projectdelta6:flexilogger:2.1.0")
+    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.0")  // Optional
 }
 ```
 
@@ -118,11 +119,105 @@ object Log : FlexiLog() {
 
     override fun report(type: LogType, tag: String, msg: String) {
         // Implement crash reporting (Sentry, Crashlytics, etc.)
+        // Note: For call site info, override the CallSite version instead
     }
 
     override fun report(type: LogType, tag: String, msg: String, tr: Throwable) {
         // Implement crash reporting with exception
+        // Note: For call site info, override the CallSite version instead
     }
+}
+```
+
+### Call Site Capture for Crash Reporting (Android/JVM)
+
+When integrating with crash reporting tools like Sentry or Crashlytics, the default behavior often shows the logging library's internal code as the error source instead of where `Log.e()` was actually called.
+
+FlexiLogger solves this by capturing the actual call site and passing it to your `report()` methods via the `CallSite` parameter.
+
+**Override the CallSite-aware report methods:**
+
+```kotlin
+import com.duck.flexilogger.CallSite
+import com.duck.flexilogger.FlexiLog
+import com.duck.flexilogger.LogType
+import io.sentry.Sentry
+import io.sentry.SentryEvent
+import io.sentry.protocol.Message
+import io.sentry.protocol.SentryException
+import io.sentry.protocol.SentryStackFrame
+import io.sentry.protocol.SentryStackTrace
+
+object Log : FlexiLog() {
+    // ... other overrides ...
+
+    // Override these methods to receive call site information
+    override fun report(type: LogType, tag: String, msg: String, callSite: CallSite?) {
+        Sentry.captureEvent(SentryEvent().apply {
+            message = Message().apply { message = msg }
+            logger = tag
+            // Use callSite to show the actual source location in Sentry
+            callSite?.let { site ->
+                exceptions = listOf(
+                    SentryException().apply {
+                        this.type = "LoggedError"
+                        this.value = msg
+                        this.module = site.className
+                        this.stacktrace = SentryStackTrace(listOf(
+                            SentryStackFrame().apply {
+                                module = site.className
+                                function = site.methodName
+                                filename = site.fileName
+                                lineno = site.lineNumber
+                                isInApp = true
+                            }
+                        ))
+                    }
+                )
+            }
+        })
+    }
+
+    override fun report(type: LogType, tag: String, msg: String, tr: Throwable, callSite: CallSite?) {
+        Sentry.captureEvent(SentryEvent().apply {
+            message = Message().apply { message = msg }
+            logger = tag
+            throwable = tr
+            // Add call site as context when there's already a throwable
+            callSite?.let { site ->
+                setTag("log_call_site", "${site.simpleClassName}.${site.methodName}")
+                setExtra("log_location", site.toFormattedString())
+            }
+        })
+    }
+}
+```
+
+**CallSite Properties:**
+
+| Property              | Description                     | Example                               |
+|-----------------------|---------------------------------|---------------------------------------|
+| `className`           | Fully qualified class name      | `com.example.app.data.DataRepo`       |
+| `simpleClassName`     | Class name without package      | `DataRepo`                            |
+| `methodName`          | Method name                     | `fetchData`                           |
+| `fileName`            | Source file name (nullable)     | `DataRepo.kt`                         |
+| `lineNumber`          | Line number (-1 if unavailable) | `123`                                 |
+| `toFormattedString()` | Formatted display string        | `DataRepo.fetchData(DataRepo.kt:123)` |
+
+**Platform Support:**
+- ✅ Android - Full support
+- ✅ JVM - Full support
+- ❌ iOS - Returns `null` (not supported)
+- ❌ JS - Returns `null` (not supported)
+
+**Skipping Additional Packages:**
+
+FlexiLogger automatically skips its own internal frames and any class extending `FlexiLog`. If you have additional wrapper classes to skip:
+
+```kotlin
+object Log : FlexiLog() {
+    override fun getAdditionalSkipPackages(): List<String> =
+        listOf("com.myapp.util.LogWrapper")
 }
 ```
 
@@ -277,32 +372,71 @@ enum class LoggingLevel(val level: Int) {
 
 ### FlexiLog Methods
 
-| Method | Description |
-|--------|-------------|
-| `i(caller, msg?, tr?)` | Info log |
-| `d(caller, msg?, tr?)` | Debug log |
-| `v(caller, msg?, tr?)` | Verbose log |
-| `w(caller, msg?, tr?)` | Warning log |
-| `e(caller, msg?, tr?, forceReport?)` | Error log |
-| `wtf(caller, msg?, tr?)` | What a Terrible Failure log |
-| `onCondition(condition, log)` | Conditional logging |
-| `withLevel(level)` | Create level-filtered logger |
+| Method                               | Description                  |
+|--------------------------------------|------------------------------|
+| `i(caller, msg?, tr?)`               | Info log                     |
+| `d(caller, msg?, tr?)`               | Debug log                    |
+| `v(caller, msg?, tr?)`               | Verbose log                  |
+| `w(caller, msg?, tr?)`               | Warning log                  |
+| `e(caller, msg?, tr?, forceReport?)` | Error log                    |
+| `wtf(caller, msg?, tr?)`             | What a Terrible Failure log  |
+| `onCondition(condition, log)`        | Conditional logging          |
+| `withLevel(level)`                   | Create level-filtered logger |
 
 The `caller` parameter can be:
 - `Any` - class name is extracted automatically
 - `String` - used directly as the tag
 - `Class<*>` - (JVM/Android only) class name is extracted
 
+### FlexiLog Protected Methods (Override in Subclass)
+
+| Method                                  | Description                                         |
+|-----------------------------------------|-----------------------------------------------------|
+| `canLogToConsole(type)`                 | **Required.** Whether to log to console             |
+| `shouldReport(type)`                    | **Required.** Whether to send to crash reporting    |
+| `shouldReportException(tr)`             | **Required.** Filter exceptions for reporting       |
+| `report(type, tag, msg)`                | **Required.** Handle crash report without throwable |
+| `report(type, tag, msg, tr)`            | **Required.** Handle crash report with throwable    |
+| `report(type, tag, msg, callSite?)`     | Handle crash report with call site info             |
+| `report(type, tag, msg, tr, callSite?)` | Handle crash report with throwable and call site    |
+| `getAdditionalSkipPackages()`           | Additional packages to skip for call site detection |
+| `shouldLogToFile(type)`                 | Whether to write to file (default: false)           |
+| `writeLogToFile(...)`                   | Handle file writing                                 |
+
+### CallSite
+
+```kotlin
+data class CallSite(
+    val className: String,      // Fully qualified class name
+    val methodName: String,     // Method name
+    val fileName: String?,      // Source file name (nullable)
+    val lineNumber: Int         // Line number (-1 if unavailable)
+) {
+    val simpleClassName: String // Class name without package
+    fun toFormattedString(): String // e.g., "DataRepo.fetchData(DataRepo.kt:123)"
+}
+```
+
 ## Platform-Specific Behavior
 
-| Platform | Console Output | Class Name Extraction |
-|----------|----------------|----------------------|
-| Android | `android.util.Log` | `obj::class.java.simpleName` |
-| JVM | `java.util.logging.Logger` | `obj::class.java.simpleName` |
-| iOS | `NSLog` | `obj::class.simpleName` |
-| JS | `console.log/info/warn/error` | `obj::class.simpleName` |
+| Platform | Console Output                | Class Name Extraction        |
+|----------|-------------------------------|------------------------------|
+| Android  | `android.util.Log`            | `obj::class.java.simpleName` |
+| JVM      | `java.util.logging.Logger`    | `obj::class.java.simpleName` |
+| iOS      | `NSLog`                       | `obj::class.simpleName`      |
+| JS       | `console.log/info/warn/error` | `obj::class.simpleName`      |
 
-## Migration from 1.x
+## Migration
+
+### From 2.0.x to 2.1.x
+
+Version 2.1.0 adds call site capture for crash reporting. **This is fully backward compatible:**
+
+- Existing `report()` implementations continue to work unchanged
+- To use call site info, override the new `report(..., callSite: CallSite?)` methods
+- The new methods have default implementations that delegate to the existing ones
+
+### From 1.x to 2.x
 
 If you're upgrading from the Android-only version:
 

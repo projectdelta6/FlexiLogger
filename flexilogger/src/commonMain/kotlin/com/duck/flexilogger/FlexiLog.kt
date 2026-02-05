@@ -218,6 +218,9 @@ abstract class FlexiLog {
     }
 
     protected fun actionLog(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+        // Capture call site early, before any additional stack frames are added
+        val callSite = captureCallSite(getAdditionalSkipPackages())
+
         if(msg.length > 4000) {
             val chopDown = msg.chopDown(4000)
             for ((i, chop) in chopDown.withIndex()) {
@@ -231,7 +234,7 @@ abstract class FlexiLog {
         } else {
             logToConsole(type, tag, msg, tr)
         }
-        reportInternal(type, tag, msg, tr, forceReport)
+        reportInternal(type, tag, msg, tr, forceReport, callSite)
         writeToFileInternal(currentTimeMillis(), type, tag, msg, tr)
     }
 
@@ -249,13 +252,20 @@ abstract class FlexiLog {
         }
     }
 
-    protected fun reportInternal(type: LogType, tag: String, msg: String, tr: Throwable? = null, forceReport: Boolean = false) {
+    protected fun reportInternal(
+        type: LogType,
+        tag: String,
+        msg: String,
+        tr: Throwable? = null,
+        forceReport: Boolean = false,
+        callSite: CallSite? = null
+    ) {
         if (forceReport || shouldReport(type)) {
             if (tr == null) {
-                report(type, tag, msg)
+                report(type, tag, msg, callSite)
             } else {
                 if(shouldReportException(tr)) {
-                    report(type, tag, msg, tr)
+                    report(type, tag, msg, tr, callSite)
                 }
             }
         }
@@ -277,6 +287,10 @@ abstract class FlexiLog {
     /**
      * Implement the actual reporting.
      *
+     * **Note:** For accurate call site information in crash reporting tools (Sentry, Crashlytics, etc.),
+     * consider overriding [report(LogType, String, String, CallSite?)] instead, which provides
+     * the actual location where the log was called (Android/JVM only).
+     *
      * @param type [LogType], the type of log this came from.
      * @param tag [String] The Log tag
      * @param msg [String] The Log message.
@@ -286,12 +300,64 @@ abstract class FlexiLog {
     /**
      * Implement the actual reporting.
      *
+     * **Note:** For accurate call site information in crash reporting tools (Sentry, Crashlytics, etc.),
+     * consider overriding [report(LogType, String, String, Throwable, CallSite?)] instead, which provides
+     * the actual location where the log was called (Android/JVM only).
+     *
      * @param type [LogType], the type of log this came from.
      * @param tag [String] The Log tag
      * @param msg [String] The Log message.
      * @param tr  [Throwable] to be attached to the Log.
      */
     protected abstract fun report(type: LogType, tag: String, msg: String, tr: Throwable)
+
+    /**
+     * Override this method to handle reports with call site information.
+     *
+     * The [callSite] parameter contains information about where the log call originated,
+     * which is useful for crash reporting tools like Sentry or Crashlytics to show
+     * the actual source of the log rather than the logging library internals.
+     *
+     * By default, this delegates to [report] without call site info for backward compatibility.
+     *
+     * @param type [LogType], the type of log this came from.
+     * @param tag [String] The Log tag
+     * @param msg [String] The Log message.
+     * @param callSite [CallSite] The location where the log call was made, or null if unavailable.
+     */
+    protected open fun report(type: LogType, tag: String, msg: String, callSite: CallSite?) {
+        report(type, tag, msg)
+    }
+
+    /**
+     * Override this method to handle reports with call site information and a throwable.
+     *
+     * The [callSite] parameter contains information about where the log call originated,
+     * which is useful for crash reporting tools like Sentry or Crashlytics to show
+     * the actual source of the log rather than the logging library internals.
+     *
+     * By default, this delegates to [report] without call site info for backward compatibility.
+     *
+     * @param type [LogType], the type of log this came from.
+     * @param tag [String] The Log tag
+     * @param msg [String] The Log message.
+     * @param tr  [Throwable] to be attached to the Log.
+     * @param callSite [CallSite] The location where the log call was made, or null if unavailable.
+     */
+    protected open fun report(type: LogType, tag: String, msg: String, tr: Throwable, callSite: CallSite?) {
+        report(type, tag, msg, tr)
+    }
+
+    /**
+     * Override to provide additional package prefixes to skip when determining call site.
+     *
+     * FlexiLogger's internal packages and any class extending [FlexiLog] are already
+     * handled automatically. Use this to skip additional wrapper classes or utilities
+     * in your codebase that you don't want to appear as the call site.
+     *
+     * @return List of package prefixes to skip (e.g., listOf("com.myapp.util.LogWrapper"))
+     */
+    protected open fun getAdditionalSkipPackages(): List<String> = emptyList()
 
     /**
      * Used to determine if we should Log to the console or not.

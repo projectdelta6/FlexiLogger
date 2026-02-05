@@ -31,3 +31,10 @@ internal actual fun getSimpleClassName(clazz: KClass<*>): String =
 
 internal actual fun currentTimeMillis(): Long =
     (NSDate().timeIntervalSince1970 * 1000).toLong()
+
+/**
+ * Call site capture is not supported on iOS.
+ * Returns null as iOS/Kotlin Native doesn't provide easy access to stack frame details.
+ */
+@Suppress("UNUSED_PARAMETER")
+internal actual fun captureCallSite(additionalSkipPackages: List<String>): CallSite? = null
