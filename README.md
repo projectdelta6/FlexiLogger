@@ -29,18 +29,18 @@ Add the dependency to your project:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger:2.1.0")
+            implementation("io.github.projectdelta6:flexilogger:2.1.1")
 
             // Optional: Ktor HTTP logging (all platforms)
-            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.0")
+            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.1")
         }
 
         // Optional: OkHttp HTTP logging (JVM/Android only)
         jvmMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.0")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.1")
         }
         androidMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.0")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.1")
         }
     }
 }
@@ -49,8 +49,8 @@ kotlin {
 **Android/JVM only:**
 ```kotlin
 dependencies {
-    implementation("io.github.projectdelta6:flexilogger:2.1.0")
-    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.0")  // Optional
+    implementation("io.github.projectdelta6:flexilogger:2.1.1")
+    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.1")  // Optional
 }
 ```
 
