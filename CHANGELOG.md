@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.3] - Unreleased
+## [2.1.3] - 2026-06-04
 
 ### Fixed
 - **JVM artifacts now target Java 11 bytecode (major 55) again.** The `jvm()` target
@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   JavaScript (Browser/Node.js) alongside Android.
 - OkHttp integration package renamed: `com.duck.flexihttplogger` → `com.duck.flexilogger.okhttp`.
 
-[2.1.3]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.2...HEAD
+[2.1.3]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/projectdelta6/FlexiLogger/compare/v2.0.0...v2.1.0
