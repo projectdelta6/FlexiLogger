@@ -5,6 +5,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.3] - Unreleased
+
+### Fixed
+- **JVM artifacts now target Java 11 bytecode (major 55) again.** The `jvm()` target
+  wasn't pinning `jvmTarget`, so it inherited the build JDK and the `*-jvm` artifacts for
+  `2.0.0`–`2.1.2` shipped as Java 24 bytecode (major 68) — unloadable on older JDKs with
+  `UnsupportedClassVersionError`. Pure-JVM (non-Android) consumers on a JDK below 24 were
+  affected; the `-android` variant was always correct. Pinned `jvmTarget = JVM_11` on the
+  `jvm()` target of all three modules.
+
+### Added
+- CI now asserts JVM main classes are ≤ Java 11 bytecode, so this regression can't return silently.
+
 ## [2.1.2] - 2026-06-04
 
 ### Fixed
@@ -61,6 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   JavaScript (Browser/Node.js) alongside Android.
 - OkHttp integration package renamed: `com.duck.flexihttplogger` → `com.duck.flexilogger.okhttp`.
 
+[2.1.3]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.2...HEAD
 [2.1.2]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/projectdelta6/FlexiLogger/compare/v2.0.0...v2.1.0

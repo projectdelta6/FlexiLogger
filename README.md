@@ -29,18 +29,18 @@ Add the dependency to your project:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger:2.1.2")
+            implementation("io.github.projectdelta6:flexilogger:2.1.3")
 
             // Optional: Ktor HTTP logging (all platforms)
-            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.2")
+            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.3")
         }
 
         // Optional: OkHttp HTTP logging (JVM/Android only)
         jvmMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.2")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.3")
         }
         androidMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.2")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.3")
         }
     }
 }
@@ -49,8 +49,8 @@ kotlin {
 **Android/JVM only:**
 ```kotlin
 dependencies {
-    implementation("io.github.projectdelta6:flexilogger:2.1.2")
-    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.2")  // Optional
+    implementation("io.github.projectdelta6:flexilogger:2.1.3")
+    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.3")  // Optional
 }
 ```
 
@@ -427,6 +427,14 @@ data class CallSite(
 | JS       | `console.log/info/warn/error` | `obj::class.simpleName`      |
 
 ## Migration
+
+### From 2.0.0–2.1.2 to 2.1.3
+
+**JVM bytecode fix.** The `*-jvm` artifacts for `2.0.0`–`2.1.2` were accidentally compiled
+to Java 24 bytecode, so pure-JVM (non-Android) consumers on a JDK below 24 hit
+`UnsupportedClassVersionError`. `2.1.3` restores Java 11 bytecode. If you worked around this
+by bumping your build to JDK 24, you can revert that once on `2.1.3`. **No code or API
+changes** — Android consumers were never affected.
 
 ### From 2.1.1 to 2.1.2
 

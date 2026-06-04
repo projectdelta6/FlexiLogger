@@ -22,7 +22,14 @@ kotlin {
     }
 
     // JVM target (Desktop)
-    jvm()
+    jvm {
+        // Pin bytecode to JVM 11 (matching the Android target). Without this the
+        // jvm() target inherits the build JDK's level, shipping unusable artifacts
+        // to consumers on older JDKs (see CHANGELOG 2.1.3).
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
+        }
+    }
 
     // iOS targets
     iosX64()

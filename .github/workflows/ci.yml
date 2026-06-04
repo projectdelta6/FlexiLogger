@@ -33,6 +33,25 @@ jobs:
       - name: Run tests and verify coverage
         run: ./gradlew allTests koverVerify
 
+      # Guard against the 2.1.3 regression: published JVM bytecode must stay at/below
+      # Java 11 (class-file major 55). Without the jvmTarget pin, CI's JDK would leak
+      # a higher major here and fail the check.
+      - name: Verify JVM bytecode level (<= Java 11 / major 55)
+        run: |
+          ./gradlew compileKotlinJvm
+          bad=0
+          while IFS= read -r cls; do
+            major=$(od -An -tu1 -j6 -N2 "$cls" | awk '{print $2}')
+            if [ "$major" -gt 55 ]; then
+              echo "::error file=$cls::JVM bytecode major $major (Java $((major-44))) exceeds Java 11 (major 55)"
+              bad=1
+            fi
+          done < <(find . -path '*/build/classes/kotlin/jvm/main/*' -name '*.class')
+          if [ "$bad" -ne 0 ]; then
+            echo "JVM bytecode level check FAILED"; exit 1
+          fi
+          echo "All JVM main classes are <= Java 11 bytecode (major 55)."
+
       - name: Upload Kover coverage report
         if: always()
         uses: actions/upload-artifact@v4
