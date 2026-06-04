@@ -39,6 +39,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   Console-output tests belong in `jvmTest`.
 - Ktor plugin tests use `ktor-client-mock`; suspend tests use `kotlinx-coroutines-test`'s `runTest`.
 - Kover only measures JVM + Android host tests; iOS/JS coverage is not reported.
+- `kotlin-js-store/yarn.lock` is committed (not ignored). Kotlin/JS regroups npm-aliased
+  lock entries differently between cold and warm builds, so `yarnLockMismatchReport` is set
+  to `WARNING` in the root `build.gradle.kts` — otherwise `clean`-then-test (the publish
+  gate) fails on cosmetic lock drift. Run `./gradlew kotlinUpgradeYarnLock` to refresh the
+  baseline when real JS dependencies change.
 
 ## Publishing
 

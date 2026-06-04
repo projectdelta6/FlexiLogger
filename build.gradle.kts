@@ -33,3 +33,13 @@ kover {
         }
     }
 }
+
+// Kotlin/JS resolves kotlin-js-store/yarn.lock slightly differently between cold
+// and warm builds (cosmetic grouping of npm-aliased entries; identical versions
+// and integrity hashes). Warn on that benign drift instead of failing the build —
+// otherwise `clean`-then-test (e.g. the publish gate) fails spuriously. The
+// committed lock is kept as a reproducibility baseline.
+plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
+    the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().yarnLockMismatchReport =
+        org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
+}
