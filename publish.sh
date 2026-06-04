@@ -189,6 +189,17 @@ fi
 echo_info "Publishing to Maven Central..."
 ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache
 
+# Tag the released commit and push the tag (only after a successful publish).
+TAG="v$VERSION"
+if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+    echo_warn "Tag $TAG already exists — skipping tag creation."
+else
+    echo_info "Tagging release as $TAG and pushing..."
+    git tag -a "$TAG" -m "Release $TAG"
+    git push origin "$TAG"
+    echo_info "Pushed tag $TAG."
+fi
+
 echo ""
 echo_info "================================================"
 echo_info "  Successfully published FlexiLogger v$VERSION!"

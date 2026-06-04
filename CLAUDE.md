@@ -62,6 +62,8 @@ Releases go to Maven Central via the Vanniktech Maven Publish plugin, driven by 
 - It also refuses to run with uncommitted changes, and warns if not on `master`.
 - `--dry-run` downgrades missing publish credentials to a warning so it runs anywhere;
   a real publish still hard-fails without them.
+- On a successful publish it tags the commit `vX.Y.Z` (from `flexiLoggerVersion`) and pushes
+  the tag to `origin` (skipped if the tag already exists; never runs in `--dry-run`).
 - For deeper artifact validation (POM/signing) without uploading: `./gradlew publishToMavenLocal`.
 - Coverage floor lives in the root `build.gradle.kts` `kover { reports { verify { ... } } }` block.
 

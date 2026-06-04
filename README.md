@@ -485,6 +485,9 @@ Before publishing, the script:
 3. Runs `./gradlew allTests koverVerify` — the full test suite **and** the coverage floor —
    and aborts the release if either fails.
 
+On a successful publish, the script tags the released commit `vX.Y.Z` (from `flexiLoggerVersion`)
+and pushes the tag to GitHub.
+
 See [CHANGELOG.md](CHANGELOG.md) for the version history. Bump `flexiLoggerVersion` in
 `gradle/libs.versions.toml` and update the README install snippets before releasing.
 
