@@ -2,6 +2,7 @@ package com.duck.flexilogger
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class FlexiLogTest {
@@ -152,11 +153,13 @@ class FlexiLogTest {
     }
 
     @Test
-    fun withLevelShouldReturnLoggerWithLevel() {
+    fun withLevelShouldReturnLoggerFilteringAtThatLevel() {
         val logger = TestLogger()
         val loggerWithLevel = logger.withLevel(LoggingLevel.D)
 
-        assertTrue(loggerWithLevel is LoggerWithLevel)
+        // Verifies the level was actually applied, not just the (statically guaranteed) type.
+        assertTrue(loggerWithLevel.canLog(LogType.D))
+        assertFalse(loggerWithLevel.canLog(LogType.V)) // V is more verbose than D
     }
 
     @Test
