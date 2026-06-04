@@ -12,6 +12,10 @@ package com.duck.flexilogger
  * @param clazz [Class] To get the String name of.
  * @return [String] The simple Name of the Class.
  */
+@Deprecated(
+    "Redundant helper; use clazz.simpleName directly.",
+    ReplaceWith("clazz.simpleName")
+)
 fun FlexiLog.getClassName(clazz: Class<*>): String = clazz.simpleName
 
 /**

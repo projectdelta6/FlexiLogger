@@ -23,9 +23,34 @@ echo_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Parse arguments
+DRY_RUN=false
+for arg in "$@"; do
+    case "$arg" in
+        --dry-run|-n)
+            DRY_RUN=true
+            ;;
+        -h|--help)
+            echo "Usage: $0 [--dry-run|-n]"
+            echo "  --dry-run, -n   Run every step (checks, clean, tests, coverage gate)"
+            echo "                  EXCEPT the actual Maven Central publish."
+            exit 0
+            ;;
+        *)
+            echo_error "Unknown argument: $arg"
+            echo "Usage: $0 [--dry-run|-n]"
+            exit 1
+            ;;
+    esac
+done
+
 # Get version from libs.versions.toml
 VERSION=$(grep 'flexiLoggerVersion' gradle/libs.versions.toml | sed 's/.*= *"\(.*\)"/\1/')
 echo_info "FlexiLogger version: $VERSION"
+
+if [[ "$DRY_RUN" == true ]]; then
+    echo_warn "DRY RUN — running all checks, tests and the coverage gate, but NOT publishing."
+fi
 
 # Check for uncommitted changes
 if [[ -n $(git status --porcelain) ]]; then
@@ -93,21 +118,50 @@ if [[ "$HAS_SIGNING" == false ]]; then
 fi
 
 if [[ "$MISSING_CREDS" == true ]]; then
-    echo ""
-    echo "Configure credentials in ~/.gradle/gradle.properties:"
-    echo "  mavenCentralUsername=your-username"
-    echo "  mavenCentralPassword=your-token"
-    echo "  signing.keyId=your-key-id"
-    echo "  signing.password=your-key-password"
-    echo "  signing.secretKeyRingFile=/path/to/secring.gpg"
-    echo ""
-    echo "Or via environment variables:"
-    echo "  ORG_GRADLE_PROJECT_mavenCentralUsername"
-    echo "  ORG_GRADLE_PROJECT_mavenCentralPassword"
-    exit 1
+    if [[ "$DRY_RUN" == true ]]; then
+        echo_warn "Missing publish credentials — ignored in dry-run (a real publish would fail here)."
+    else
+        echo ""
+        echo "Configure credentials in ~/.gradle/gradle.properties:"
+        echo "  mavenCentralUsername=your-username"
+        echo "  mavenCentralPassword=your-token"
+        echo "  signing.keyId=your-key-id"
+        echo "  signing.password=your-key-password"
+        echo "  signing.secretKeyRingFile=/path/to/secring.gpg"
+        echo ""
+        echo "Or via environment variables:"
+        echo "  ORG_GRADLE_PROJECT_mavenCentralUsername"
+        echo "  ORG_GRADLE_PROJECT_mavenCentralPassword"
+        exit 1
+    fi
 fi
 
 echo_info "Credentials found in gradle.properties"
+
+# Clean, test and verify coverage BEFORE prompting — fail fast so a broken
+# build never waits on (or wastes) the publish confirmation.
+echo_info "Cleaning previous build..."
+./gradlew clean
+
+echo_info "Running tests and verifying coverage..."
+if ! ./gradlew allTests koverVerify; then
+    echo_error "Tests or coverage verification failed. Fix before publishing."
+    exit 1
+fi
+echo_info "All tests passed and the coverage gate is satisfied."
+
+# In dry-run, stop here — everything except the actual publish has run.
+if [[ "$DRY_RUN" == true ]]; then
+    echo ""
+    echo_info "================================================"
+    echo_info "  DRY RUN complete for FlexiLogger v$VERSION"
+    echo_info "================================================"
+    echo ""
+    echo_info "All pre-publish checks, tests and the coverage gate passed."
+    echo_info "Skipped: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache"
+    echo_info "Re-run without --dry-run to publish for real."
+    exit 0
+fi
 
 # Confirm publish
 echo ""
@@ -125,17 +179,6 @@ echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo_info "Publish cancelled."
     exit 0
-fi
-
-# Clean build
-echo_info "Cleaning previous build..."
-./gradlew clean
-
-# Run tests
-echo_info "Running tests..."
-if ! ./gradlew allTests; then
-    echo_error "Tests failed. Fix tests before publishing."
-    exit 1
 fi
 
 # Publish

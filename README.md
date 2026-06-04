@@ -29,18 +29,18 @@ Add the dependency to your project:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger:2.1.1")
+            implementation("io.github.projectdelta6:flexilogger:2.1.2")
 
             // Optional: Ktor HTTP logging (all platforms)
-            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.1")
+            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.2")
         }
 
         // Optional: OkHttp HTTP logging (JVM/Android only)
         jvmMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.1")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.2")
         }
         androidMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.1")
+            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.2")
         }
     }
 }
@@ -49,8 +49,8 @@ kotlin {
 **Android/JVM only:**
 ```kotlin
 dependencies {
-    implementation("io.github.projectdelta6:flexilogger:2.1.1")
-    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.1")  // Optional
+    implementation("io.github.projectdelta6:flexilogger:2.1.2")
+    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.2")  // Optional
 }
 ```
 
@@ -428,6 +428,24 @@ data class CallSite(
 
 ## Migration
 
+### From 2.1.1 to 2.1.2
+
+**Class name resolution fix (behaviour change).** Passing a class reference as the
+`caller` now resolves to the represented class name on every platform:
+
+```kotlin
+Log.d(MyActivity::class.java, "msg")  // tag: "MyActivity"  (previously "Class")
+Log.d(MyActivity::class, "msg")       // tag: "MyActivity"  (previously wrong on all platforms)
+```
+
+Previously these were silently mis-tagged because the `Any` overload shadows the
+`Class<*>` extension. If you relied on the old (incorrect) `"Class"`/`KClass` tag
+text — unlikely — your log tags will change. Passing `this` or a `String` tag is
+unaffected.
+
+**Deprecation.** `FlexiLog.getClassName(clazz: Class<*>)` (JVM/Android) is deprecated;
+use `clazz.simpleName` directly. It still works but emits a warning with a `ReplaceWith` fix.
+
 ### From 2.0.x to 2.1.x
 
 Version 2.1.0 adds call site capture for crash reporting. **This is fully backward compatible:**
@@ -443,6 +461,29 @@ If you're upgrading from the Android-only version:
 1. **Dependency change**: Update your dependencies to use the new module names
 2. **Package change for OkHttp**: `com.duck.flexihttplogger` → `com.duck.flexilogger.okhttp`
 3. **No code changes required**: The core API remains identical
+
+## Releasing (Maintainers)
+
+Releases are published to Maven Central via the [Vanniktech Maven Publish](https://github.com/vanniktech/gradle-maven-publish-plugin) plugin, orchestrated by `publish.sh`:
+
+```bash
+# Dry run — runs every step (checks, clean, tests, coverage gate) EXCEPT the upload
+./publish.sh --dry-run    # or -n
+
+# Full release — same gates, then confirms and publishes to Maven Central
+./publish.sh
+```
+
+Before publishing, the script:
+
+1. Refuses to run with uncommitted changes, and warns if you're not on `master`.
+2. Verifies Maven Central credentials and signing config (a dry run downgrades missing
+   credentials to a warning so it can run anywhere).
+3. Runs `./gradlew allTests koverVerify` — the full test suite **and** the coverage floor —
+   and aborts the release if either fails.
+
+See [CHANGELOG.md](CHANGELOG.md) for the version history. Bump `flexiLoggerVersion` in
+`gradle/libs.versions.toml` and update the README install snippets before releasing.
 
 ## License
 

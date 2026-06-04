@@ -62,6 +62,15 @@ class FlexiLogTest {
     }
 
     @Test
+    fun loggingWithKClassCallerShouldUseRepresentedClassName() {
+        val logger = TestLogger()
+        logger.i(FlexiLogTest::class, "Test message")
+
+        assertEquals(1, logger.loggedMessages.size)
+        assertEquals("FlexiLogTest", logger.loggedMessages[0].tag)
+    }
+
+    @Test
     fun loggingWithThrowableShouldIncludeThrowable() {
         val logger = TestLogger()
         val exception = RuntimeException("Test exception")

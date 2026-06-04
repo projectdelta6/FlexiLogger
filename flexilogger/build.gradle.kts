@@ -4,14 +4,17 @@ plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.vanniktech.publish)
+    alias(libs.plugins.kover)
 }
 
 kotlin {
     // Android target (new KMP plugin)
-    androidLibrary {
+    android {
         namespace = "com.duck.flexilogger"
         compileSdk = libs.versions.compileSdk.get().toInt()
         minSdk = libs.versions.minSdk.get().toInt()
+
+        withHostTest {}
 
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
@@ -40,6 +43,7 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
 
         androidMain.dependencies {

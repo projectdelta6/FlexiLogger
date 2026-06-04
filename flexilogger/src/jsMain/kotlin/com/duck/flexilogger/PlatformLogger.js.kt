@@ -21,8 +21,11 @@ internal actual fun platformLog(
     }
 }
 
-internal actual fun getSimpleClassName(obj: Any): String =
-    obj::class.simpleName ?: "Unknown"
+internal actual fun getSimpleClassName(obj: Any): String = when (obj) {
+    // A KClass passed as the caller should resolve to the class it represents.
+    is KClass<*> -> obj.simpleName ?: "Unknown"
+    else -> obj::class.simpleName ?: "Unknown"
+}
 
 internal actual fun getSimpleClassName(clazz: KClass<*>): String =
     clazz.simpleName ?: "Unknown"

@@ -23,8 +23,11 @@ internal actual fun platformLog(
     NSLog("[$level] $tag: $message$throwableInfo")
 }
 
-internal actual fun getSimpleClassName(obj: Any): String =
-    obj::class.simpleName ?: obj::class.toString()
+internal actual fun getSimpleClassName(obj: Any): String = when (obj) {
+    // A KClass passed as the caller should resolve to the class it represents.
+    is KClass<*> -> obj.simpleName ?: obj.toString()
+    else -> obj::class.simpleName ?: obj::class.toString()
+}
 
 internal actual fun getSimpleClassName(clazz: KClass<*>): String =
     clazz.simpleName ?: clazz.toString()
