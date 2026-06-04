@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+# Cancel superseded runs on the same branch/PR.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests & coverage gate
+    # macOS is required: allTests compiles the Kotlin/Native iOS targets, which
+    # can't build on Linux. macos-latest is ARM64, so iosSimulatorArm64Test runs too.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21' # Runs Gradle/AGP; library still compiles to JVM 11. Bump to match local if needed.
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Same gate as publish.sh: full multiplatform test suite + coverage floor.
+      - name: Run tests and verify coverage
+        run: ./gradlew allTests koverVerify
+
+      - name: Upload Kover coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-report
+          path: build/reports/kover/
+          if-no-files-found: ignore
