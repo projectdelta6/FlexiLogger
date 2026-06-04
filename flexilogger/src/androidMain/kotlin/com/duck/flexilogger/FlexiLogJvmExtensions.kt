@@ -1,4 +1,5 @@
 @file:JvmName("FlexiLogJvm")
+@file:Suppress("EXTENSION_SHADOWED_BY_MEMBER") // Class<*> overloads are shadowed by the Any overloads in Kotlin (by design); kept for Java interop.
 package com.duck.flexilogger
 
 /**
@@ -6,12 +7,20 @@ package com.duck.flexilogger
  * with Class<*> parameters.
  */
 
+private const val CLASS_OVERLOAD_DEPRECATION =
+    "Redundant: FlexiLog's Any overload now resolves Class/KClass callers to the correct tag. " +
+        "Shadowed in Kotlin; kept only for legacy Java interop."
+
 /**
  * Gets the class name string for the given [Class].
  *
  * @param clazz [Class] To get the String name of.
  * @return [String] The simple Name of the Class.
  */
+@Deprecated(
+    "Redundant helper; use clazz.simpleName directly.",
+    ReplaceWith("clazz.simpleName")
+)
 fun FlexiLog.getClassName(clazz: Class<*>): String = clazz.simpleName
 
 /**
@@ -21,6 +30,7 @@ fun FlexiLog.getClassName(clazz: Class<*>): String = clazz.simpleName
  * @param msg    [String] The Message to be Logged.
  * @param tr     [Throwable] to be attached to the Log.
  */
+@Deprecated(CLASS_OVERLOAD_DEPRECATION)
 @JvmOverloads
 fun FlexiLog.i(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
     i(caller.simpleName, msg, tr)
@@ -33,6 +43,7 @@ fun FlexiLog.i(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
  * @param msg    [String] The Message to be Logged.
  * @param tr     [Throwable] to be attached to the Log.
  */
+@Deprecated(CLASS_OVERLOAD_DEPRECATION)
 @JvmOverloads
 fun FlexiLog.d(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
     d(caller.simpleName, msg, tr)
@@ -45,6 +56,7 @@ fun FlexiLog.d(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
  * @param msg    [String] The Message to be Logged.
  * @param tr     [Throwable] to be attached to the Log.
  */
+@Deprecated(CLASS_OVERLOAD_DEPRECATION)
 @JvmOverloads
 fun FlexiLog.v(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
     v(caller.simpleName, msg, tr)
@@ -58,6 +70,7 @@ fun FlexiLog.v(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
  * @param tr     [Throwable] to be attached to the Log.
  * @param forceReport [Boolean] Force reporting even if shouldReport returns false.
  */
+@Deprecated(CLASS_OVERLOAD_DEPRECATION)
 @JvmOverloads
 fun FlexiLog.e(caller: Class<*>, msg: String? = null, tr: Throwable? = null, forceReport: Boolean = false) {
     e(caller.simpleName, msg, tr, forceReport)
@@ -70,6 +83,7 @@ fun FlexiLog.e(caller: Class<*>, msg: String? = null, tr: Throwable? = null, for
  * @param msg    [String] The Message to be Logged.
  * @param tr     [Throwable] to be attached to the Log.
  */
+@Deprecated(CLASS_OVERLOAD_DEPRECATION)
 @JvmOverloads
 fun FlexiLog.w(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
     w(caller.simpleName, msg, tr)
@@ -82,6 +96,7 @@ fun FlexiLog.w(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
  * @param msg    [String] The Message to be Logged.
  * @param tr     [Throwable] to be attached to the Log.
  */
+@Deprecated(CLASS_OVERLOAD_DEPRECATION)
 @JvmOverloads
 fun FlexiLog.wtf(caller: Class<*>, msg: String? = null, tr: Throwable? = null) {
     wtf(caller.simpleName, msg, tr)

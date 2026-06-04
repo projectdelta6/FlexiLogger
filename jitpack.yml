@@ -1,8 +1,0 @@
-jdk:
-  - openjdk11
-before_install:
-  - sdk update
-  - sdk install java 17.0.6-amzn
-  - sdk use java 17.0.6-amzn
-  - sdk install maven
-  - mvn -v

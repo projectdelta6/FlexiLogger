@@ -16,12 +16,56 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Build TestApp (Android)
 ./gradlew :TestApp:assembleDebug
 
-# Run tests
+# Run tests (all platforms)
 ./gradlew allTests
+
+# Run JVM tests only (fastest; covers commonTest logic)
+./gradlew :flexilogger:jvmTest
+
+# Code coverage (Kover) — aggregated across all library modules
+./gradlew koverHtmlReport   # report at build/reports/kover/html/index.html
+./gradlew koverXmlReport    # machine-readable, for CI
 
 # Clean build
 ./gradlew clean
 ```
+
+## Testing & Coverage
+
+- Tests live in `commonTest` (cross-platform, run on JVM/Android/JS) and `jvmTest`
+  (JVM-only: call-site capture, `Class<*>`/`KClass` extraction, platform logger).
+- **Do not** call `platformLog` (i.e. enable `canLogToConsole`) from `commonTest` —
+  the Android host test routes to `android.util.Log`, which is not mocked and throws.
+  Console-output tests belong in `jvmTest`.
+- Ktor plugin tests use `ktor-client-mock`; suspend tests use `kotlinx-coroutines-test`'s `runTest`.
+- Kover only measures JVM + Android host tests; iOS/JS coverage is not reported.
+- `kotlin-js-store/yarn.lock` is committed (not ignored). Kotlin/JS regroups npm-aliased
+  lock entries differently between cold and warm builds, so `yarnLockMismatchReport` is set
+  to `WARNING` in the root `build.gradle.kts` — otherwise `clean`-then-test (the publish
+  gate) fails on cosmetic lock drift. Run `./gradlew kotlinUpgradeYarnLock` to refresh the
+  baseline when real JS dependencies change.
+
+## Publishing
+
+Releases go to Maven Central via the Vanniktech Maven Publish plugin, driven by `publish.sh`:
+
+```bash
+# Dry run — every step (checks, clean, allTests, koverVerify) EXCEPT the upload
+./publish.sh --dry-run      # or -n
+
+# Full release — same gates, then prompts and publishes to Maven Central
+./publish.sh
+```
+
+- The script gates on `./gradlew allTests koverVerify` (tests + coverage floor) **before**
+  the publish confirmation, so a failing build or coverage regression aborts early.
+- It also refuses to run with uncommitted changes, and warns if not on `master`.
+- `--dry-run` downgrades missing publish credentials to a warning so it runs anywhere;
+  a real publish still hard-fails without them.
+- On a successful publish it tags the commit `vX.Y.Z` (from `flexiLoggerVersion`) and pushes
+  the tag to `origin` (skipped if the tag already exists; never runs in `--dry-run`).
+- For deeper artifact validation (POM/signing) without uploading: `./gradlew publishToMavenLocal`.
+- Coverage floor lives in the root `build.gradle.kts` `kover { reports { verify { ... } } }` block.
 
 ## Project Structure
 

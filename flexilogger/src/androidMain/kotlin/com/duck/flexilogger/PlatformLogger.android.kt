@@ -30,7 +30,14 @@ internal actual fun platformLog(
     }
 }
 
-internal actual fun getSimpleClassName(obj: Any): String = obj::class.java.simpleName
+internal actual fun getSimpleClassName(obj: Any): String = when (obj) {
+    // When the caller passes a class reference, use the name of the class it
+    // represents rather than "Class"/"KClass". (Members shadow the Class<*>
+    // extension overloads, so a Kotlin caller lands here.)
+    is Class<*> -> obj.simpleName
+    is KClass<*> -> obj.java.simpleName
+    else -> obj::class.java.simpleName
+}
 
 internal actual fun getSimpleClassName(clazz: KClass<*>): String = clazz.java.simpleName
 

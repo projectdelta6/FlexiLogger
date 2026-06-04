@@ -16,9 +16,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://jitpack.io")
-        }
         // Node.js distribution for Kotlin/JS
         exclusiveContent {
             forRepository {
