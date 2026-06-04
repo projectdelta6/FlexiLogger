@@ -41,4 +41,5 @@ captures/
 /.kotlin/sessions/
 /.claude/settings.local.json
 /.kotlin
-/kotlin-js-store/yarn.lock
+# kotlin-js-store/yarn.lock is intentionally committed for reproducible JS builds
+# and a stable kotlinStoreYarnLock check (see CLAUDE.md "Testing & Coverage").
