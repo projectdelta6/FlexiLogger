@@ -2,7 +2,7 @@
 compileSdk = "37"
 targetSdk = "37"
 minSdk = "21"
-flexiLoggerVersion = "2.1.2"
+flexiLoggerVersion = "2.1.3"
 # Plugin versions
 agp = "9.2.1"
 kotlin = "2.4.0"
