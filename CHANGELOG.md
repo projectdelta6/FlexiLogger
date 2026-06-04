@@ -41,20 +41,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   branches, `onConditionSuspend`, JVM call-site capture, `Class<*>`/`KClass` extraction,
   the OkHttp interceptor bridge, and the Ktor client plugin (via `ktor-client-mock`).
 
-## [2.1.1] - 2025
+## [2.1.1] - 2026-04-24
 
 ### Changed
 - Updated AGP, Kotlin, Gradle and dependencies.
 - Fixed build issues and corrected `LoggingLevel` ordering.
 
-## [2.1.0] - 2025
+## [2.1.0] - 2026-02-05
 
 ### Added
 - Call site capture for accurate crash reporting (Android/JVM). New
   `report(..., callSite: CallSite?)` overloads with default implementations that delegate
   to the existing `report()` methods — fully backward compatible.
 
-## [2.0.0] - 2024
+## [2.0.0] - 2026-01-18
 
 ### Changed
 - Rewrote the library as Kotlin Multiplatform, adding iOS, JVM (Desktop) and
