@@ -59,14 +59,18 @@ if [[ -n $(git status --porcelain) ]]; then
     exit 1
 fi
 
-# Check we're on master branch
+# Check we're on master branch (skipped in dry-run)
 BRANCH=$(git branch --show-current)
 if [[ "$BRANCH" != "master" ]]; then
-    echo_warn "You are on branch '$BRANCH', not 'master'."
-    read -p "Continue anyway? (y/N) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
+    if [[ "$DRY_RUN" == true ]]; then
+        echo_warn "On branch '$BRANCH', not 'master' — branch check skipped in dry-run."
+    else
+        echo_warn "You are on branch '$BRANCH', not 'master'."
+        read -p "Continue anyway? (y/N) " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
     fi
 fi
 
