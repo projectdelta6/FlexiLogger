@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 - `FlexiLog.getClassName(clazz: Class<*>)` (JVM/Android). It is a redundant helper —
   use `clazz.simpleName` directly. Annotated with `ReplaceWith` for a one-click fix.
+- The `Class<*>` log overloads on `FlexiLog` and `LoggerWithLevel` (`i`/`d`/`v`/`e`/`w`/`wtf`,
+  JVM/Android). They are shadowed in Kotlin by the `Any` overloads, which now resolve
+  `Class`/`KClass` callers to the correct tag, making these redundant. Kept for legacy
+  Java interop.
 
 ### Changed
 - Migrated the Kotlin Multiplatform Android target to the AGP 9 `android {}` DSL

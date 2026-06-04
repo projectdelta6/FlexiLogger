@@ -443,8 +443,11 @@ Previously these were silently mis-tagged because the `Any` overload shadows the
 text — unlikely — your log tags will change. Passing `this` or a `String` tag is
 unaffected.
 
-**Deprecation.** `FlexiLog.getClassName(clazz: Class<*>)` (JVM/Android) is deprecated;
-use `clazz.simpleName` directly. It still works but emits a warning with a `ReplaceWith` fix.
+**Deprecations.** `FlexiLog.getClassName(clazz: Class<*>)` (JVM/Android) is deprecated;
+use `clazz.simpleName` directly (with a `ReplaceWith` fix). The `Class<*>` log overloads on
+`FlexiLog`/`LoggerWithLevel` (`i`/`d`/`v`/`e`/`w`/`wtf`) are also deprecated — the `Any`
+overload now handles `Class`/`KClass` callers, so `Log.d(MyClass::class.java, msg)` keeps
+working unchanged. All are kept for legacy Java interop.
 
 ### From 2.0.x to 2.1.x
 
