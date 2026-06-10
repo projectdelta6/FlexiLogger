@@ -426,6 +426,14 @@ data class CallSite(
 | iOS      | `NSLog`                       | `obj::class.simpleName`      |
 | JS       | `console.log/info/warn/error` | `obj::class.simpleName`      |
 
+## R8 / ProGuard
+
+No consumer keep rules are required. FlexiLogger and its `flexilogger-okhttp` /
+`flexilogger-ktor` integrations use no runtime reflection on consumer types, no
+serialization, and no by-name enum lookups, so R8 full-mode (including the consuming
+app's classes) is safe out of the box. ProGuard/R8 applies only to the Android/JVM
+artifacts; the iOS and JS targets are unaffected.
+
 ## Migration
 
 ### From 2.0.0–2.1.2 to 2.1.3
