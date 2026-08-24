@@ -50,6 +50,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "FlexiLogger"
 include(":flexilogger")
+// The directory is FlexiLogger/ but the project is :flexilogger. macOS resolves that
+// case-insensitively; a case-sensitive filesystem would not, so map it explicitly.
+project(":flexilogger").projectDir = file("FlexiLogger")
 include(":flexilogger-okhttp")
 include(":flexilogger-ktor")
 include(":TestApp")

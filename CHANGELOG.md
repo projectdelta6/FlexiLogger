@@ -5,6 +5,25 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.4] - Unreleased
+
+### Removed
+- The six unwired `consumer-rules.pro` / `proguard-rules.pro` files in the library modules.
+  They were never referenced — the KMP Android plugin doesn't set `consumerProguardFiles` —
+  so they were inert. FlexiLogger needs no consumer keep rules: no runtime reflection on
+  consumer types, no serialization, no by-name enum lookups. The README now documents this.
+
+### Changed
+- Build toolchain: Gradle 9.5.0 → 9.6.1, AGP 9.2.1 → 9.3.1, Kotlin 2.4.0 → 2.4.10,
+  Vanniktech Maven Publish 0.36.0 → 0.37.0, Kover 0.9.8 → 0.9.9.
+- Dependencies: Ktor 3.5.0 → 3.5.2, OkHttp `logging-interceptor` 5.3.2 → 5.5.0,
+  ConstraintLayout 2.2.1 → 2.2.2, AppCompat 1.7.1 → 1.8.0.
+- `settings.gradle.kts` now maps `:flexilogger` to the `FlexiLogger/` directory explicitly,
+  so the build resolves on case-sensitive filesystems rather than relying on macOS.
+
+### Added
+- `foojay-resolver-convention`, so Gradle can auto-provision the JDK 11 toolchain TestApp uses.
+
 ## [2.1.3] - 2026-06-04
 
 ### Fixed
@@ -74,6 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   JavaScript (Browser/Node.js) alongside Android.
 - OkHttp integration package renamed: `com.duck.flexihttplogger` → `com.duck.flexilogger.okhttp`.
 
+[2.1.4]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.3...HEAD
 [2.1.3]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.0...v2.1.1

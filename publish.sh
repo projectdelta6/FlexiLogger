@@ -79,28 +79,39 @@ GRADLE_PROPS="$HOME/.gradle/gradle.properties"
 HAS_USERNAME=false
 HAS_PASSWORD=false
 HAS_SIGNING=false
+FROM_ENV=false
+FROM_PROPS=false
 
 # Check environment variables
-if [[ -n "$ORG_GRADLE_PROJECT_mavenCentralUsername" ]] || [[ -n "$MAVEN_CENTRAL_USERNAME" ]]; then
+# Only the names Gradle itself reads count here. Aliases such as
+# MAVEN_CENTRAL_USERNAME or SIGNING_KEY are never read by Gradle, so accepting
+# them would pass this check and then fail later at signing or upload.
+if [[ -n "$ORG_GRADLE_PROJECT_mavenCentralUsername" ]]; then
     HAS_USERNAME=true
+    FROM_ENV=true
 fi
-if [[ -n "$ORG_GRADLE_PROJECT_mavenCentralPassword" ]] || [[ -n "$MAVEN_CENTRAL_PASSWORD" ]]; then
+if [[ -n "$ORG_GRADLE_PROJECT_mavenCentralPassword" ]]; then
     HAS_PASSWORD=true
+    FROM_ENV=true
 fi
-if [[ -n "$ORG_GRADLE_PROJECT_signingInMemoryKey" ]] || [[ -n "$SIGNING_KEY" ]]; then
+if [[ -n "$ORG_GRADLE_PROJECT_signingInMemoryKey" ]]; then
     HAS_SIGNING=true
+    FROM_ENV=true
 fi
 
 # Check gradle.properties
 if [[ -f "$GRADLE_PROPS" ]]; then
     if grep -q "^mavenCentralUsername=" "$GRADLE_PROPS" 2>/dev/null; then
         HAS_USERNAME=true
+        FROM_PROPS=true
     fi
     if grep -q "^mavenCentralPassword=" "$GRADLE_PROPS" 2>/dev/null; then
         HAS_PASSWORD=true
+        FROM_PROPS=true
     fi
     if grep -q "^signing\." "$GRADLE_PROPS" 2>/dev/null; then
         HAS_SIGNING=true
+        FROM_PROPS=true
     fi
 fi
 
@@ -118,7 +129,12 @@ if [[ "$HAS_PASSWORD" == false ]]; then
 fi
 
 if [[ "$HAS_SIGNING" == false ]]; then
-    echo_warn "No signing configuration found."
+    if [[ "$DRY_RUN" == true ]]; then
+        echo_warn "No signing configuration found — ignored in dry-run (a real publish would fail here)."
+    else
+        echo_error "No signing configuration found. Maven Central rejects unsigned artifacts."
+        MISSING_CREDS=true
+    fi
 fi
 
 if [[ "$MISSING_CREDS" == true ]]; then
@@ -126,21 +142,35 @@ if [[ "$MISSING_CREDS" == true ]]; then
         echo_warn "Missing publish credentials — ignored in dry-run (a real publish would fail here)."
     else
         echo ""
-        echo "Configure credentials in ~/.gradle/gradle.properties:"
-        echo "  mavenCentralUsername=your-username"
-        echo "  mavenCentralPassword=your-token"
-        echo "  signing.keyId=your-key-id"
-        echo "  signing.password=your-key-password"
-        echo "  signing.secretKeyRingFile=/path/to/secring.gpg"
+        echo "Credentials live in 1Password, not on disk. Publish with:"
         echo ""
-        echo "Or via environment variables:"
+        echo "  flexipublish            # defined at the end of ~/.zshrc"
+        echo ""
+        echo "It reads the signing key and Sonatype token from 1Password, exports"
+        echo "the five variables below, runs this script, then unsets them again:"
         echo "  ORG_GRADLE_PROJECT_mavenCentralUsername"
         echo "  ORG_GRADLE_PROJECT_mavenCentralPassword"
+        echo "  ORG_GRADLE_PROJECT_signingInMemoryKey"
+        echo "  ORG_GRADLE_PROJECT_signingInMemoryKeyId"
+        echo "  ORG_GRADLE_PROJECT_signingInMemoryKeyPassword"
+        echo ""
+        echo "Those five are the only names Gradle reads. On a machine without the"
+        echo "1Password CLI they can go in ~/.gradle/gradle.properties instead, but"
+        echo "that puts the signing key back on disk — which this project"
+        echo "deliberately moved away from."
         exit 1
     fi
 fi
 
-echo_info "Credentials found in gradle.properties"
+if [[ "$FROM_ENV" == true && "$FROM_PROPS" == true ]]; then
+    echo_info "Credentials found in the environment and ~/.gradle/gradle.properties (environment wins)."
+elif [[ "$FROM_ENV" == true ]]; then
+    echo_info "Credentials found in the environment (exported from 1Password)."
+elif [[ "$FROM_PROPS" == true ]]; then
+    echo_info "Credentials found in ~/.gradle/gradle.properties."
+else
+    echo_warn "No credentials found in the environment or ~/.gradle/gradle.properties."
+fi
 
 # Clean, test and verify coverage BEFORE prompting — fail fast so a broken
 # build never waits on (or wastes) the publish confirmation.
