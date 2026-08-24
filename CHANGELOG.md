@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.1.4] - Unreleased
+## [2.1.4] - 2026-08-24
 
 ### Removed
 - The six unwired `consumer-rules.pro` / `proguard-rules.pro` files in the library modules.
@@ -93,7 +93,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   JavaScript (Browser/Node.js) alongside Android.
 - OkHttp integration package renamed: `com.duck.flexihttplogger` → `com.duck.flexilogger.okhttp`.
 
-[2.1.4]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.3...HEAD
+[2.1.4]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.3...v2.1.4
 [2.1.3]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.0...v2.1.1
