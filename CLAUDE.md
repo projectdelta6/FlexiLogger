@@ -47,15 +47,25 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Publishing
 
-Releases go to Maven Central via the Vanniktech Maven Publish plugin, driven by `publish.sh`:
+Releases go to Maven Central via the Vanniktech Maven Publish plugin, driven by `publish.sh`.
+
+**Credentials are not on disk.** The GPG signing key and the Sonatype token live in
+1Password. The `flexipublish` shell function (defined at the end of `~/.zshrc`) reads them,
+exports the five `ORG_GRADLE_PROJECT_*` variables, runs `publish.sh`, then unsets them —
+so it, not `publish.sh`, is the entry point:
 
 ```bash
 # Dry run — every step (checks, clean, allTests, koverVerify) EXCEPT the upload
-./publish.sh --dry-run      # or -n
+flexipublish --dry-run      # or -n
 
 # Full release — same gates, then prompts and publishes to Maven Central
-./publish.sh
+flexipublish
 ```
+
+Calling `./publish.sh` directly still works if those variables are already exported;
+otherwise it aborts and prints how to supply them. There is no `signing.*` entry in
+`~/.gradle/gradle.properties` any more, so a bare Gradle publish task fails with
+*"no configured signatory"* — that is intended, not a regression.
 
 - The script gates on `./gradlew allTests koverVerify` (tests + coverage floor) **before**
   the publish confirmation, so a failing build or coverage regression aborts early.
@@ -64,7 +74,12 @@ Releases go to Maven Central via the Vanniktech Maven Publish plugin, driven by 
   a real publish still hard-fails without them.
 - On a successful publish it tags the commit `vX.Y.Z` (from `flexiLoggerVersion`) and pushes
   the tag to `origin` (skipped if the tag already exists; never runs in `--dry-run`).
+- The script reports where it found credentials (environment vs `gradle.properties`), and
+  treats missing signing config as a hard error on a real publish — Central rejects
+  unsigned artifacts.
 - For deeper artifact validation (POM/signing) without uploading: `./gradlew publishToMavenLocal`.
+  This needs the three `signingInMemory*` variables exported first; `flexipublish` unsets them
+  on exit, so export them separately for a standalone Gradle run.
 - Coverage floor lives in the root `build.gradle.kts` `kover { reports { verify { ... } } }` block.
 
 ## Project Structure
@@ -73,7 +88,7 @@ This is a **Kotlin Multiplatform** library supporting Android, iOS, JVM, and Jav
 
 ```
 FlexiLogger/
-├── flexilogger/                    # KMP core module
+├── FlexiLogger/                    # KMP core module (Gradle path is :flexilogger)
 │   └── src/
 │       ├── commonMain/             # Shared code (FlexiLog, LogType, etc.)
 │       ├── commonTest/             # Shared tests
