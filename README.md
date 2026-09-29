@@ -4,7 +4,7 @@ Kotlin Multiplatform logging library providing flexible, configurable logging wi
 
 **Supported Platforms:** Android, iOS, JVM (Desktop), JavaScript (Browser/Node.js)
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.projectdelta6/flexilogger.svg)](https://central.sonatype.com/artifact/io.github.projectdelta6/flexilogger)
+[![Maven Central](https://img.shields.io/maven-central/v/dev.projectdelta6/flexilogger.svg)](https://central.sonatype.com/artifact/dev.projectdelta6/flexilogger)
 
 ## Features
 
@@ -22,6 +22,13 @@ Kotlin Multiplatform logging library providing flexible, configurable logging wi
 
 ### Maven Central (Recommended)
 
+> **Moved to `dev.projectdelta6`.** From 2.2.0 the group ID is `dev.projectdelta6` (it was
+> `io.github.projectdelta6` up to 2.1.4). Only the dependency line changes: the artifact
+> names and the `com.duck.flexilogger` package are the same, so no code changes are needed.
+> Gradle treats the two groups as unrelated modules, so don't mix them. If another library
+> (e.g. AppolyDroid-Toolbox) still pulls in the old group, you'll get duplicate
+> `com.duck.flexilogger` class errors until it's updated too.
+
 Add the dependency to your project:
 
 **Kotlin Multiplatform:**
@@ -29,18 +36,18 @@ Add the dependency to your project:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger:2.1.4")
+            implementation("dev.projectdelta6:flexilogger:2.2.0")
 
             // Optional: Ktor HTTP logging (all platforms)
-            implementation("io.github.projectdelta6:flexilogger-ktor:2.1.4")
+            implementation("dev.projectdelta6:flexilogger-ktor:2.2.0")
         }
 
         // Optional: OkHttp HTTP logging (JVM/Android only)
         jvmMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.4")
+            implementation("dev.projectdelta6:flexilogger-okhttp:2.2.0")
         }
         androidMain.dependencies {
-            implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.4")
+            implementation("dev.projectdelta6:flexilogger-okhttp:2.2.0")
         }
     }
 }
@@ -49,8 +56,8 @@ kotlin {
 **Android/JVM only:**
 ```kotlin
 dependencies {
-    implementation("io.github.projectdelta6:flexilogger:2.1.4")
-    implementation("io.github.projectdelta6:flexilogger-okhttp:2.1.4")  // Optional
+    implementation("dev.projectdelta6:flexilogger:2.2.0")
+    implementation("dev.projectdelta6:flexilogger-okhttp:2.2.0")  // Optional
 }
 ```
 

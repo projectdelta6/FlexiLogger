@@ -48,7 +48,7 @@ mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
 
-    coordinates("io.github.projectdelta6", "flexilogger-okhttp", libs.versions.flexiLoggerVersion.get())
+    coordinates("dev.projectdelta6", "flexilogger-okhttp", libs.versions.flexiLoggerVersion.get())
 
     pom {
         name.set("FlexiLogger OkHttp")

@@ -43,3 +43,18 @@ plugins.withType<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin> {
     the<org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension>().yarnLockMismatchReport =
         org.jetbrains.kotlin.gradle.targets.js.yarn.YarnLockMismatchReport.WARNING
 }
+
+// `./gradlew signPublications` signs every publication of every library module
+// without installing or uploading anything. publish.sh --dry-run uses it so a bad
+// signing key, key ID or passphrase fails before an irreversible Central upload.
+// Depending on every Sign task (rather than listing them) keeps new KMP targets
+// covered automatically.
+subprojects {
+    plugins.withId("signing") {
+        tasks.register("signPublications") {
+            group = "publishing"
+            description = "Signs every publication in this module without publishing it."
+            dependsOn(tasks.withType<Sign>())
+        }
+    }
+}
