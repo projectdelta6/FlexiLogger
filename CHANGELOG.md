@@ -5,6 +5,21 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - Unreleased
+
+### Changed
+- **Moved to `dev.projectdelta6`.** The Maven group ID changes from `io.github.projectdelta6`
+  to `dev.projectdelta6` for all three artifacts (`flexilogger`, `flexilogger-okhttp`,
+  `flexilogger-ktor`). Only the dependency line changes; there is no API change, and the
+  `com.duck.flexilogger` package is unchanged. Existing `io.github.projectdelta6` releases stay
+  on Central but get no new versions. Gradle treats the two groups as unrelated modules, so
+  don't mix them: an old-group copy pulled in transitively (e.g. via AppolyDroid-Toolbox)
+  causes duplicate-class errors until that library moves too.
+- Build toolchain: AGP 9.3.1 → 9.4.1, Kotlin 2.4.10 → 2.4.20, Kover 0.9.9 → 0.9.10.
+- Dependencies: Ktor 3.5.2 → 3.6.0, core-ktx 1.19.0 → 1.19.1.
+- `publish.sh --dry-run` now signs every publication and requires the signing key, so a bad
+  key or passphrase fails before an irreversible upload. The upload token stays optional.
+
 ## [2.1.4] - 2026-08-24
 
 ### Removed
@@ -93,6 +108,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   JavaScript (Browser/Node.js) alongside Android.
 - OkHttp integration package renamed: `com.duck.flexihttplogger` → `com.duck.flexilogger.okhttp`.
 
+[2.2.0]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.4...HEAD
 [2.1.4]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.3...v2.1.4
 [2.1.3]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.2...v2.1.3
 [2.1.2]: https://github.com/projectdelta6/FlexiLogger/compare/v2.1.1...v2.1.2

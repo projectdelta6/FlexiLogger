@@ -32,8 +32,9 @@ for arg in "$@"; do
             ;;
         -h|--help)
             echo "Usage: $0 [--dry-run|-n]"
-            echo "  --dry-run, -n   Run every step (checks, clean, tests, coverage gate)"
-            echo "                  EXCEPT the actual Maven Central publish."
+            echo "  --dry-run, -n   Run every step (checks, clean, tests, coverage gate,"
+            echo "                  signing every publication) EXCEPT the Maven Central upload."
+            echo "                  Needs the signing key; the upload token is optional."
             exit 0
             ;;
         *)
@@ -49,7 +50,7 @@ VERSION=$(grep 'flexiLoggerVersion' gradle/libs.versions.toml | sed 's/.*= *"\(.
 echo_info "FlexiLogger version: $VERSION"
 
 if [[ "$DRY_RUN" == true ]]; then
-    echo_warn "DRY RUN — running all checks, tests and the coverage gate, but NOT publishing."
+    echo_warn "DRY RUN — running all checks, tests, the coverage gate and signing, but NOT uploading."
 fi
 
 # Check for uncommitted changes
@@ -128,18 +129,18 @@ if [[ "$HAS_PASSWORD" == false ]]; then
     MISSING_CREDS=true
 fi
 
+# Signing is required in dry-run too: the dry run signs every publication, because
+# signing is the one step a real release cannot survive failing. Only the upload
+# token is optional in dry-run, since nothing is uploaded.
+MISSING_SIGNING=false
 if [[ "$HAS_SIGNING" == false ]]; then
-    if [[ "$DRY_RUN" == true ]]; then
-        echo_warn "No signing configuration found — ignored in dry-run (a real publish would fail here)."
-    else
-        echo_error "No signing configuration found. Maven Central rejects unsigned artifacts."
-        MISSING_CREDS=true
-    fi
+    echo_error "No signing configuration found. Maven Central rejects unsigned artifacts."
+    MISSING_SIGNING=true
 fi
 
-if [[ "$MISSING_CREDS" == true ]]; then
-    if [[ "$DRY_RUN" == true ]]; then
-        echo_warn "Missing publish credentials — ignored in dry-run (a real publish would fail here)."
+if [[ "$MISSING_CREDS" == true || "$MISSING_SIGNING" == true ]]; then
+    if [[ "$DRY_RUN" == true && "$MISSING_SIGNING" == false ]]; then
+        echo_warn "Missing upload credentials — ignored in dry-run (a real publish would fail here)."
     else
         echo ""
         echo "Credentials live in 1Password, not on disk. Publish with:"
@@ -184,6 +185,57 @@ if ! ./gradlew allTests koverVerify; then
 fi
 echo_info "All tests passed and the coverage gate is satisfied."
 
+# In dry-run, sign every publication without installing or uploading anything, so
+# a bad key, wrong key ID or wrong passphrase fails here rather than mid-release.
+# signPublications (root build.gradle.kts) depends on every Sign task in each
+# library module; the .asc files land in <module>/build only.
+if [[ "$DRY_RUN" == true ]]; then
+    echo_info "Signing all publications (nothing is installed or uploaded)..."
+    if ! ./gradlew signPublications --no-configuration-cache; then
+        echo_error "Signing failed. Check the key, key ID and passphrase."
+        exit 1
+    fi
+    # Every publication (<module>/build/publications/<name>) must have a matching
+    # <module>/build/signatures/sign<Name>Publication directory holding a signed POM
+    # and Gradle module metadata, and every .asc in it must be an armored signature.
+    # The floor is the current total: core 7 (kotlinMultiplatform, android, jvm,
+    # js, 3 iOS), ktor 7, okhttp 3. A shortfall usually means the iOS targets
+    # weren't registered (a non-macOS host), which a real publish would ship
+    # silently without.
+    EXPECTED_PUBLICATIONS=17
+    PUBLICATIONS=()
+    SIGNATURE_COUNT=0
+    for module in FlexiLogger flexilogger-okhttp flexilogger-ktor; do
+        for pub in "$module"/build/publications/*/; do
+            [[ -d "$pub" ]] || continue
+            name=$(basename "$pub")
+            # macOS ships bash 3.2, so no ${name^}.
+            sigdir="$module/build/signatures/sign$(echo "${name:0:1}" | tr '[:lower:]' '[:upper:]')${name:1}Publication"
+            for required in pom-default.xml.asc module.json.asc; do
+                if [[ ! -f "$sigdir/$required" ]]; then
+                    echo_error "Publication '$name' in $module is unsigned: missing $sigdir/$required"
+                    exit 1
+                fi
+            done
+            for asc in "$sigdir"/*.asc; do
+                if [[ "$(head -n 1 "$asc")" != "-----BEGIN PGP SIGNATURE-----" ]]; then
+                    echo_error "Not an armored PGP signature: $asc"
+                    exit 1
+                fi
+                SIGNATURE_COUNT=$((SIGNATURE_COUNT + 1))
+            done
+            PUBLICATIONS+=("$module:$name")
+        done
+    done
+    if (( ${#PUBLICATIONS[@]} < EXPECTED_PUBLICATIONS )); then
+        echo_error "Expected at least $EXPECTED_PUBLICATIONS signed publications, found ${#PUBLICATIONS[@]}:"
+        printf '  %s\n' "${PUBLICATIONS[@]}"
+        exit 1
+    fi
+    echo_info "Signed ${#PUBLICATIONS[@]} publications ($SIGNATURE_COUNT signatures):"
+    printf '  %s\n' "${PUBLICATIONS[@]}"
+fi
+
 # In dry-run, stop here — everything except the actual publish has run.
 if [[ "$DRY_RUN" == true ]]; then
     echo ""
@@ -191,7 +243,7 @@ if [[ "$DRY_RUN" == true ]]; then
     echo_info "  DRY RUN complete for FlexiLogger v$VERSION"
     echo_info "================================================"
     echo ""
-    echo_info "All pre-publish checks, tests and the coverage gate passed."
+    echo_info "All pre-publish checks, tests, the coverage gate and signing passed."
     echo_info "Skipped: ./gradlew publishAndReleaseToMavenCentral --no-configuration-cache"
     echo_info "Re-run without --dry-run to publish for real."
     exit 0
@@ -204,9 +256,9 @@ echo "  Publishing FlexiLogger v$VERSION to Maven Central"
 echo "================================================"
 echo ""
 echo "Modules to publish:"
-echo "  - io.github.projectdelta6:flexilogger:$VERSION"
-echo "  - io.github.projectdelta6:flexilogger-okhttp:$VERSION"
-echo "  - io.github.projectdelta6:flexilogger-ktor:$VERSION"
+echo "  - dev.projectdelta6:flexilogger:$VERSION"
+echo "  - dev.projectdelta6:flexilogger-okhttp:$VERSION"
+echo "  - dev.projectdelta6:flexilogger-ktor:$VERSION"
 echo ""
 read -p "Proceed with publish? (y/N) " -n 1 -r
 echo
@@ -236,4 +288,4 @@ echo_info "  Successfully published FlexiLogger v$VERSION!"
 echo_info "================================================"
 echo ""
 echo_info "The artifacts should be available on Maven Central shortly."
-echo_info "Check: https://central.sonatype.com/artifact/io.github.projectdelta6/flexilogger"
+echo_info "Check: https://central.sonatype.com/artifact/dev.projectdelta6/flexilogger"

@@ -48,6 +48,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Publishing
 
 Releases go to Maven Central via the Vanniktech Maven Publish plugin, driven by `publish.sh`.
+The group ID is `dev.projectdelta6` (it was `io.github.projectdelta6` up to 2.1.4; both namespaces
+are verified on the same Sonatype account). AppolyDroid-Toolbox re-exports FlexiLogger as `api`,
+so a group change has to ship in lockstep with an AppolyDroid release, or apps get duplicate
+`com.duck.flexilogger` classes.
 
 **Credentials are not on disk.** The GPG signing key and the Sonatype token live in
 1Password. The `flexipublish` shell function (defined at the end of `~/.zshrc`) reads them,
@@ -55,7 +59,7 @@ exports the five `ORG_GRADLE_PROJECT_*` variables, runs `publish.sh`, then unset
 so it, not `publish.sh`, is the entry point:
 
 ```bash
-# Dry run — every step (checks, clean, allTests, koverVerify) EXCEPT the upload
+# Dry run — every step (checks, clean, allTests, koverVerify, signing) EXCEPT the upload
 flexipublish --dry-run      # or -n
 
 # Full release — same gates, then prompts and publishes to Maven Central
@@ -70,8 +74,12 @@ otherwise it aborts and prints how to supply them. There is no `signing.*` entry
 - The script gates on `./gradlew allTests koverVerify` (tests + coverage floor) **before**
   the publish confirmation, so a failing build or coverage regression aborts early.
 - It also refuses to run with uncommitted changes, and warns if not on `master`.
-- `--dry-run` downgrades missing publish credentials to a warning so it runs anywhere;
-  a real publish still hard-fails without them.
+- `--dry-run` **signs** every publication via `./gradlew signPublications` (an aggregate
+  registered in the root `build.gradle.kts` that depends on every `Sign` task), then checks
+  each `<module>/build/publications/*/` has an armored `pom-default.xml.asc` and
+  `module.json.asc`, with a floor of 17 publications. A bad key or passphrase therefore fails
+  before an irreversible upload, and a non-macOS host (no iOS publications) fails the floor.
+  So the dry run needs the signing key; only the upload token is optional in a dry run.
 - On a successful publish it tags the commit `vX.Y.Z` (from `flexiLoggerVersion`) and pushes
   the tag to `origin` (skipped if the tag already exists; never runs in `--dry-run`).
 - The script reports where it found credentials (environment vs `gradle.properties`), and

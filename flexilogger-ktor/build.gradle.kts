@@ -61,7 +61,7 @@ mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
 
-    coordinates("io.github.projectdelta6", "flexilogger-ktor", libs.versions.flexiLoggerVersion.get())
+    coordinates("dev.projectdelta6", "flexilogger-ktor", libs.versions.flexiLoggerVersion.get())
 
     pom {
         name.set("FlexiLogger Ktor")
